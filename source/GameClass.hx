@@ -19,6 +19,14 @@ class GameClass extends FlxGame
 	 */
 	public function new()
 	{
+		
+		#if flash
+		Lib.current.stage.color = 0x000000;
+		#end
+		#if desktop
+		Lib.current.stage.opaqueBackground = 0x000000;
+		#end
+		
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
 

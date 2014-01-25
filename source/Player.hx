@@ -1,5 +1,6 @@
 package ;
 
+import flixel.addons.display.FlxNestedSprite;
 import flixel.FlxG;
 import flixel.FlxSprite;
 
@@ -7,16 +8,22 @@ import flixel.FlxSprite;
  * ...
  * @author Tile Isle
  */
-class Player extends FlxSprite
+class Player extends FlxNestedSprite
 {
 
 	private inline static var SPEED:Int = 200;
+	private var _jeckyl:FlxNestedSprite;
+	private var _hyde:FlxNestedSprite;
 	
-	public function new(X:Float=0, Y:Float=0, ?SimpleGraphic:Dynamic) 
+	public function new(X:Float=0, Y:Float=0) 
 	{
 		super(X, Y);
 		
-		makeGraphic(16, 16, 0xffff0000);
+		
+		
+		add(_jeckyl);
+		//add(_hyde);
+		//_hyde.alive  = false;
 		
 	}
 	
@@ -50,6 +57,8 @@ class Player extends FlxSprite
 		if (y + height > FlxG.worldBounds.bottom) y -= 4;
 		
 		super.update();
+		
 	}
+
 	
 }
