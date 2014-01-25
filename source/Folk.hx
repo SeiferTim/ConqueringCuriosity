@@ -39,7 +39,7 @@ class Folk extends FlxSprite
 		velocity.x = 0;
 		velocity.y = 0;
 		
-		if (Reg.playState.mode == Reg.playState.MODE_H && FlxMath.distanceBetween(this, Reg.playState.playerPos) < _scareRange)
+		if (Reg.playState.mode == Reg.playState.MODE_H && FlxMath.distanceBetween(this, Reg.playState.currentSpr) < _scareRange)
 		{
 			_brain.setState(runAway);
 		}
@@ -59,7 +59,7 @@ class Folk extends FlxSprite
 		var v = FlxAngle.rotatePoint(SPEED * .2, 0, 0, 0, _dir);
 		velocity.x = v.x;
 		velocity.y = v.y;
-		if (Reg.playState.mode == Reg.playState.MODE_H && FlxMath.distanceBetween(this, Reg.playState.playerPos) < _scareRange)
+		if (Reg.playState.mode == Reg.playState.MODE_H && FlxMath.distanceBetween(this, Reg.playState.currentSpr) < _scareRange)
 		{
 			_brain.setState(runAway);
 		}
@@ -76,12 +76,12 @@ class Folk extends FlxSprite
 	
 	private function runAway():Void
 	{
-		var a:Float = FlxAngle.angleBetween(Reg.playState.playerPos, this, true);
+		var a:Float = FlxAngle.angleBetween(Reg.playState.currentSpr, this, true);
 		var v:FlxPoint = FlxAngle.rotatePoint(SPEED, 0, 0, 0, a);
 		velocity.x = v.x;
 		velocity.y = v.y;
 		
-		if (Reg.playState.mode != Reg.playState.MODE_H || FlxMath.distanceBetween(this, Reg.playState.playerPos) >= _scareRange)
+		if (Reg.playState.mode != Reg.playState.MODE_H || FlxMath.distanceBetween(this, Reg.playState.currentSpr) >= _scareRange)
 		{
 			if (_runTimer > 3)
 				_brain.setState(idle);

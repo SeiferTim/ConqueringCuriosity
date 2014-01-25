@@ -9,11 +9,14 @@ import flixel.effects.particles.FlxEmitterExt;
 import flixel.effects.particles.FlxParticle;
 import flixel.FlxCamera;
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.text.FlxText;
 import flixel.tile.FlxTilemap;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
@@ -36,9 +39,9 @@ class PlayState extends FlxState
 	
 	private var _level:FlxOgmoLoader;
 	private var _tmBackground:FlxTilemap;
-	private var _tmpWalls:FlxTilemap;
-	private var _tmpObjects:FlxGroup;
-	private var _tmpForeground:FlxTilemap;
+	private var _tmWalls:FlxTilemap;
+	private var _grpObjects:FlxGroup;
+	private var _tmForeground:FlxTilemap;
 	
 	private var _grpPlayer:FlxGroup;
 	
@@ -54,6 +57,8 @@ class PlayState extends FlxState
 	
 	private var _playerHealth:Int = 100;
 	private var _barHealth:FlxBar;
+	private var _twnAlphaTrans:FlxTween;
+	private var _twnScaleTrans:FlxTween;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -70,25 +75,27 @@ class PlayState extends FlxState
 		
 		_level = new FlxOgmoLoader("assets/maps/level001.oel");
 		_tmBackground = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Backgrounds");
-		//_tmpWalls = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Walls");
+		_tmWalls = _level.loadTilemap("assets/images/walls.png", 16, 16, "Walls");
 		//_level.loadEntities(loadObject, "Objects");
-		_tmpForeground = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Foregrounds");
+		_tmForeground = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Foregrounds");
 		
 		add(_tmBackground);
-		_tmpObjects = new FlxGroup();
+		_grpObjects = new FlxGroup();
 		
-		add(_tmpObjects);
+		add(_grpObjects);
+		add(_tmWalls);
 		
-		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
 		
 		_grpPlayer = new FlxGroup();
 		
@@ -102,6 +109,11 @@ class PlayState extends FlxState
 		_burst.makeParticles("assets/images/particles.png", 100, 0, true, 0);
 		//_burst.blend = BlendMode.SCREEN;
 		
+		_jeckyl.x = 100;
+		_jeckyl.y = 100;
+
+		_hyde.x = _jeckyl.x + (_jeckyl.width / 2) - (_hyde.width / 2);
+		_hyde.y = _jeckyl.y + (_jeckyl.height / 2) - (_hyde.height / 2);
 		
 		add(_jeckyl);
 		add(_burst);
@@ -109,12 +121,13 @@ class PlayState extends FlxState
 		_hyde.visible = false;
 		_mode = MODE_J;
 		
-		add(_tmpForeground);
+		add(_tmForeground);
 		
 		
-		_playerPos = new FlxSprite().makeGraphic(1, 1, 0x0);
-		add(_playerPos);
-		FlxSpriteUtil.screenCenter(_playerPos);
+		//_playerPos = new FlxSprite().makeGraphic(1, 1, 0x0);
+		//add(_playerPos);
+		
+		//FlxSpriteUtil.screenCenter(_playerPos);
 		
 		FlxG.camera.follow(_playerPos, FlxCamera.STYLE_LOCKON);
 		
@@ -164,13 +177,16 @@ class PlayState extends FlxState
 		
 		if (_transforming)
 		{
-			_playerPos.velocity.y = _playerPos.velocity.x = 0;
-			
+			_currentSpr.velocity.y = _currentSpr.velocity.x = 0;
+			//_currentSpr.updateHitbox();
+			//FlxObject.separate(_currentSpr, _tmWalls);
+			/*
 			if (_mode == MODE_J)
 			{
 				if (_hyde.alpha > 0)
 				{
 					_hyde.alpha -= FlxG.elapsed * 3;
+					_hyde.scale.x = _hyde.scale.y = .5;
 				}
 				else
 				{
@@ -188,6 +204,7 @@ class PlayState extends FlxState
 					_transforming = false;
 				}
 			}
+			*/
 		}
 		else
 		{
@@ -197,29 +214,44 @@ class PlayState extends FlxState
 				{
 					_mode = MODE_H;
 					_currentSpr = _hyde;
+					_hyde.scale.x = _hyde.scale.y = .5;
 					//_jeckyl.visible = false;
+					
+					_hyde.x = _jeckyl.x + (_jeckyl.width / 2) - (_hyde.width / 2);
+					_hyde.y = _jeckyl.y + (_jeckyl.height / 2) - (_hyde.height / 2);
+					_twnAlphaTrans  = FlxTween.multiVar(_hyde, {alpha: 1 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneTransform } );
+					_twnScaleTrans  = FlxTween.multiVar(_hyde.scale, {x: 1, y:1 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn } );
+					
 					_hyde.visible = true;
 					_hyde.alpha = 0;
 					_transforming = true;
-					_playerPos.velocity.x = 0;
-					_playerPos.velocity.y = 0;
+					_hyde.velocity.x = _hyde.velocity.y = 0;
+					_jeckyl.velocity.x = _jeckyl.velocity.y = 0;
 					FlxG.camera.flash(0xffffffff, FlxG.elapsed * 6);
-					_burst.x = _playerPos.x;
-					_burst.y = _playerPos.y;
+					_burst.x = _currentSpr.x + (_currentSpr.width/2);
+					_burst.y = _currentSpr.y + (_currentSpr.height/2);
 					_burst.start(true, 0, 0, 100, FlxG.elapsed * 20);
+					
 				}
 				else if (_mode == MODE_H)
 				{
 					_mode = MODE_J;
 					_currentSpr = _jeckyl;
+					_twnAlphaTrans  = FlxTween.multiVar(_hyde, {alpha: 0 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneTransform } );
+					_twnScaleTrans  = FlxTween.multiVar(_hyde.scale, {x: .5, y: .5 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn } );
+					
+					
+					_jeckyl.x = _hyde.x + (_hyde.width / 2) - (_jeckyl.width / 2);
+					_jeckyl.y = _hyde.y + (_hyde.height / 2) - (_jeckyl.height / 2);
+					
 					_jeckyl.visible = true;
 					//_hyde.visible = false;
 					_transforming = true;
-					_playerPos.velocity.x = 0;
-					_playerPos.velocity.y = 0;
+					_hyde.velocity.x = _hyde.velocity.y = 0;
+					_jeckyl.velocity.x = _jeckyl.velocity.y = 0;
 					FlxG.camera.flash(0xffffffff, FlxG.elapsed * 6);
-					_burst.x = _playerPos.x;
-					_burst.y = _playerPos.y;
+					_burst.x = _currentSpr.x + (_currentSpr.width/2);
+					_burst.y = _currentSpr.y + (_currentSpr.height/2);
 					_burst.start(true, 0, 0, 100, FlxG.elapsed * 20);
 				}
 			}
@@ -227,53 +259,60 @@ class PlayState extends FlxState
 			{
 				if (FlxG.keys.anyPressed(["UP"]))
 				{
-					_playerPos.velocity.y = -(_mode == MODE_J ? SPEED_J : SPEED_H);
+					_currentSpr.velocity.y = -(_mode == MODE_J ? SPEED_J : SPEED_H);
 				}
 				else if (FlxG.keys.anyPressed(["DOWN"]))
 				{
-					_playerPos.velocity.y = (_mode == MODE_J ? SPEED_J : SPEED_H);
+					_currentSpr.velocity.y = (_mode == MODE_J ? SPEED_J : SPEED_H);
 				}
 				else
-					_playerPos.velocity.y = 0;
+					_currentSpr.velocity.y = 0;
 				
 				if (FlxG.keys.anyPressed(["LEFT"]))
 				{
-					_playerPos.velocity.x = -(_mode == MODE_J ? SPEED_J : SPEED_H);
+					_currentSpr.velocity.x = -(_mode == MODE_J ? SPEED_J : SPEED_H);
 				}
 				else if (FlxG.keys.anyPressed(["RIGHT"]))
 				{
-					_playerPos.velocity.x = (_mode == MODE_J ? SPEED_J : SPEED_H);
+					_currentSpr.velocity.x = (_mode == MODE_J ? SPEED_J : SPEED_H);
 				}
 				else
-					_playerPos.velocity.x = 0;
+					_currentSpr.velocity.x = 0;
 			}
 			
 			
-			_currentSpr.x = _playerPos.x - (_currentSpr.width / 2);
-			_currentSpr.y = _playerPos.y - (_currentSpr.height / 2);
+			//_playerPos.width = _currentSpr.width;
+			//_playerPos.height = _currentSpr.height;
+			
+			//_playerPos.offset.x = -(_currentSpr.width / 2);
+			//_playerPos.offset.y = -(_currentSpr.height / 2);
+			//_currentSpr.x = _playerPos.x - (_currentSpr.width / 2);
+			//_currentSpr.y = _playerPos.y - (_currentSpr.height / 2);
+			
+			
 			if (_currentSpr.x < FlxG.worldBounds.left) 
 			{
 				_currentSpr.x = FlxG.worldBounds.left;
-				_playerPos.x = _currentSpr.x + (_currentSpr.width / 2);
-				_playerPos.velocity.x = 0;
+				//_playerPos.x = _currentSpr.x + (_currentSpr.width / 2);
+				_currentSpr.velocity.x = 0;
 			}
 			if (_currentSpr.x + _currentSpr.width > FlxG.worldBounds.right) 
 			{
 				_currentSpr.x = FlxG.worldBounds.right - _currentSpr.width;
-				_playerPos.x = _currentSpr.x + (_currentSpr.width / 2);
-				_playerPos.velocity.x = 0;
+				//_playerPos.x = _currentSpr.x + (_currentSpr.width / 2);
+				_currentSpr.velocity.x = 0;
 			}
 			if (_currentSpr.y < FlxG.worldBounds.top)
 			{
 				_currentSpr.y = FlxG.worldBounds.top;
-				_playerPos.y = _currentSpr.y + (_currentSpr.height / 2);
-				_playerPos.velocity.y = 0;
+				//_playerPos.y = _currentSpr.y + (_currentSpr.height / 2);
+				_currentSpr.velocity.y = 0;
 			}
 			if (_currentSpr.y + _currentSpr.height > FlxG.worldBounds.bottom)
 			{
 				_currentSpr.y = FlxG.worldBounds.bottom - _currentSpr.height;
-				_playerPos.y = _currentSpr.y + (_currentSpr.height / 2);
-				_playerPos.velocity.y = 0;
+				//_playerPos.y = _currentSpr.y + (_currentSpr.height / 2);
+				_currentSpr.velocity.y = 0;
 				
 			}
 			
@@ -287,10 +326,39 @@ class PlayState extends FlxState
 			}
 		}
 		
-		FlxG.collide(_tmpObjects, _tmpObjects);
-		
 		super.update();
+		
+		FlxG.collide(_grpObjects, _grpObjects);
+		FlxG.collide(_grpObjects, _tmWalls);
+		
+		if (!_transforming)
+			FlxG.collide(_currentSpr, _tmWalls, playerHitsWall);
+		else
+		{
+			FlxG.collide(_jeckyl, _tmWalls, playerHitsWall);
+			FlxG.collide(_hyde, _tmWalls, playerHitsWall);
+		}
+		
+		
+		
+		
+		
 	}	
+	
+	private function DoneTransform(T:FlxTween):Void
+	{
+		if (_mode == MODE_H)
+			_jeckyl.visible = false;
+		_transforming = false;
+	}
+	
+	private function playerHitsWall(Spr:Dynamic, Walls:Dynamic):Void
+	{
+		trace('!!');
+		//var m:FlxPoint = _currentSpr.getMidpoint();
+		//_playerPos.x = m.x;
+		//_playerPos.y = m.y;
+	}
 	
 	function get_playerHealth():Int 
 	{
@@ -317,4 +385,11 @@ class PlayState extends FlxState
 	}
 	
 	public var playerPos(get_playerPos, null):FlxSprite;
+	
+	function get_currentSpr():FlxSprite 
+	{
+		return _currentSpr;
+	}
+	
+	public var currentSpr(get_currentSpr, null):FlxSprite;
 }
