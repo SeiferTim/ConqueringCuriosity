@@ -77,7 +77,7 @@
   <Tilesets>
     <Tileset>
       <Name>TileSet001</Name>
-      <FilePath>..\images\tilemap-1.png</FilePath>
+      <FilePath>..\images\tile_sheet.png</FilePath>
       <TileSize>
         <Width>16</Width>
         <Height>16</Height>
