@@ -4,9 +4,11 @@ import flash.display.BlendMode;
 import flash.Lib;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.editors.ogmo.FlxOgmoLoader;
+import flixel.animation.FlxBaseAnimation;
 import flixel.effects.FlxFlicker;
 import flixel.effects.particles.FlxEmitterExt;
 import flixel.effects.particles.FlxParticle;
+import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -44,14 +46,6 @@ class PlayState extends FlxState
 	private var _grpObjects:FlxGroup;
 	private var _tmForeground:FlxTilemap;
 	
-	private var _newlevel:FlxOgmoLoader;
-	private var _newtmBackground:FlxTilemap;
-	private var _newtmWalls:FlxTilemap;
-	private var _newgrpObjects:FlxGroup;
-	private var _newtmForeground:FlxTilemap;
-	
-	
-	
 	private var _grpPlayer:FlxGroup;
 	
 	private var _currentSpr:FlxSprite;
@@ -65,7 +59,7 @@ class PlayState extends FlxState
 	private var _loading:Bool = true;
 	
 	private var _playerHealth:Int = 100;
-	private var _barHealth:FlxBar;
+	//private var _barHealth:FlxBar;
 	private var _twnAlphaTrans:FlxTween;
 	private var _twnScaleTrans:FlxTween;
 	private var _changingRoom:Bool = false;
@@ -94,26 +88,16 @@ class PlayState extends FlxState
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.visible = false;
 		#end
-		trace(Reg.levels[Reg.levelX][Reg.levelY]);
-		_level = new FlxOgmoLoader(Reg.levels[Reg.levelX][Reg.levelY]);
+		
+		_level = new FlxOgmoLoader(Reg.levels[Reg.levelY][Reg.levelX]);
 		_grpObjects = new FlxGroup();
 		_tmBackground = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Backgrounds");
-		_newtmBackground = new FlxTilemap();
-		_newtmBackground.kill();
 		_tmWalls = _level.loadTilemap("assets/images/walls.png", 16, 16, "Walls");
-		_newtmWalls = new FlxTilemap();
-		_newtmWalls.kill();
-		//_level.loadEntities(loadObject, "Objects");
 		_tmForeground = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Foregrounds");
-		_newtmForeground = new FlxTilemap();
-		
 		add(_tmBackground);
-		add(_newtmBackground);
 		_grpObjects = new FlxGroup();
-		
 		add(_grpObjects);
 		add(_tmWalls);
-		add(_newtmWalls);
 		
 		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
 		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
@@ -152,37 +136,19 @@ class PlayState extends FlxState
 		_mode = MODE_J;
 		
 		add(_tmForeground);
-		add(_newtmForeground);
-		_newtmForeground.kill();
-		
-		//_playerPos = new FlxSprite().makeGraphic(1, 1, 0x0);
-		//add(_playerPos);
-		
-		//FlxSpriteUtil.screenCenter(_playerPos);
-		
 		
 		_meter = new BalanceMeter();
 		add(_meter);
 		
-		_barHealth = new FlxBar(FlxG.width - 100, 4, FlxBar.FILL_LEFT_TO_RIGHT, 96, 8, this, "playerHealth", 0, 100, true);
-		_barHealth.scrollFactor.x = _barHealth.scrollFactor.y = 0;
+		//_barHealth = new FlxBar(FlxG.width - 100, 4, FlxBar.FILL_LEFT_TO_RIGHT, 96, 8, this, "playerHealth", 0, 100, true);
+		//_barHealth.scrollFactor.x = _barHealth.scrollFactor.y = 0;
 		
-		add(_barHealth);
+		//add(_barHealth);
 		
 		FlxG.camera.follow(_jeckyl, FlxCamera.STYLE_LOCKON);
 		
 				
 		FlxG.camera.fade(0xff000000, .33, true, finishLoad);
-		
-		
-		FlxG.watch.add(_jeckyl, "x");
-		FlxG.watch.add(_jeckyl, "y");
-		FlxG.watch.add(this, "_offsetX");
-		FlxG.watch.add(this, "_offsetY");
-		FlxG.watch.add(FlxG.camera.bounds, "left");
-		FlxG.watch.add(FlxG.camera.bounds, "top");
-		FlxG.watch.add(FlxG.camera.bounds, "right");
-		FlxG.watch.add(FlxG.camera.bounds, "bottom");
 		
 		super.create();
 	}
@@ -192,59 +158,55 @@ class PlayState extends FlxState
 		if (_changingRoom)
 			return;
 		_changingRoom = true;
-		//_twnRoom = FlxTween.multiVar(_sprBlack, { alpha:1 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, callback: changeRoomsStartDone } );
-		_level = new FlxOgmoLoader(Reg.levels[Reg.levelX][Reg.levelY]);
-		
-		
-		//_level = new _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Backgrounds");
-		replace(_newtmBackground, _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Backgrounds"));
-		replace(_newtmWalls, _level.loadTilemap("assets/images/walls.png", 16, 16, "Walls"));
-		_level.loadEntities(loadObject, "Objects");
-		replace(_newtmForeground , _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Foregrounds"));
-		_newtmWalls.x = _newtmForeground.x = _newtmBackground.x = _offsetX;
-		_newtmWalls.y = _newtmForeground.y = _newtmBackground.y = _offsetY;
-		//FlxG.camera.follow(_currentSpr, FlxCamera.STYLE_TOPDOWN_TIGHT);
-		_twnRoom = FlxTween.multiVar(_currentSpr, { x: _destX, y: _destY }, 1, {type:FlxTween.ONESHOT, ease:FlxEase.quartInOut, complete:changeRoomsStartDone } );
-		
+		FlxG.camera.fade(0xff000000, .2, false, changeRoomsStartDone,true);
 		
 	}
 	
-	private function changeRoomsStartDone(T:FlxTween):Void
+	private function changeRoomsStartDone():Void
 	{
 		
 		_tmBackground.kill();
 		_tmForeground.kill();
 		_tmWalls.kill();
-		//_grpObjects.kill();
 		_tmBackground.destroy();
 		_tmForeground.destroy();
 		_tmWalls.destroy();
-		//_grpObjects.destroy();
-		for (i in _grpObjects.members)
+		
+		_level = new FlxOgmoLoader(Reg.levels[Reg.levelY][Reg.levelX]);
+		
+		var _tmpBackground:FlxTilemap = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Backgrounds"); 
+		var _tmpWalls:FlxTilemap = _level.loadTilemap("assets/images/walls.png", 16, 16, "Walls");
+		var _tmpForeground:FlxTilemap = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Foregrounds");
+		
+		while (_grpObjects.members.length > 0)
 		{
-			if (cast(i, FlxSprite).x < _newtmBackground.x || cast(i, FlxSprite).x > _newtmBackground.x + _newtmBackground.width || cast(i, FlxSprite).y < _newtmBackground.y || cast(i, FlxSprite).y > _newtmBackground.y + _newtmBackground.height)
-			{
-				cast(i, FlxSprite).kill();
-				cast(i, FlxSprite).destroy();	
-			}
+			_grpObjects.members[0].kill();
+			_grpObjects.remove(_grpObjects._members[0], true);
 		}
-		//_tmBackground = _newtmBackground;
-		//_tmForeground = _newtmForeground;
-		//_tmWalls = _newtmWalls;
-		//_newtmWalls = null;
-		//_newtmBackground = null;
-		//_newtmForeground = null;
 		
-		replace(_tmBackground, _newtmBackground);
-		replace(_tmForeground, _newtmForeground);
-		replace(_tmWalls, _newtmWalls);
+		replace(_tmBackground, _tmpBackground);
+		replace(_tmWalls, _tmpWalls);
+		_level.loadEntities(loadObject, "Objects");
+		replace(_tmForeground , _tmpForeground);
 		
-		//FlxG.camera.follow(_currentSpr, FlxCamera.STYLE_TOPDOWN);
-		FlxG.camera.setBounds(_tmBackground.x, _tmBackground.y, _tmBackground.width, _tmBackground.height, true);
+		
+		
+		_tmBackground  = _tmpBackground;
+		_tmWalls = _tmpWalls;
+		_tmForeground = _tmpForeground;
+		
+		_currentSpr.x = _destX;
+		_currentSpr.y = _destY;
 	
+		FlxG.camera.fade(0xff000000, .2, true, changeRoomsFinish, true);
+		
+		
+	}
+	
+	
+	private function changeRoomsFinish():Void
+	{
 		_changingRoom = false;
-		
-		
 	}
 	
 	
@@ -282,33 +244,6 @@ class PlayState extends FlxState
 		if (_transforming)
 		{
 			_currentSpr.velocity.y = _currentSpr.velocity.x = 0;
-			//_currentSpr.updateHitbox();
-			//FlxObject.separate(_currentSpr, _tmWalls);
-			/*
-			if (_mode == MODE_J)
-			{
-				if (_hyde.alpha > 0)
-				{
-					_hyde.alpha -= FlxG.elapsed * 3;
-					_hyde.scale.x = _hyde.scale.y = .5;
-				}
-				else
-				{
-					_hyde.visible = false;
-					_transforming = false;
-				}
-			}
-			else if (_mode == MODE_H)
-			{
-				if (_hyde.alpha < 1)
-					_hyde.alpha += FlxG.elapsed * 3;
-				else
-				{
-					_jeckyl.visible = false;
-					_transforming = false;
-				}
-			}
-			*/
 		}
 		else
 		{
@@ -351,73 +286,38 @@ class PlayState extends FlxState
 				else
 					_currentSpr.velocity.x = 0;
 			}
-			
-			
-			//_playerPos.width = _currentSpr.width;
-			//_playerPos.height = _currentSpr.height;
-			
-			//_playerPos.offset.x = -(_currentSpr.width / 2);
-			//_playerPos.offset.y = -(_currentSpr.height / 2);
-			//_currentSpr.x = _playerPos.x - (_currentSpr.width / 2);
-			//_currentSpr.y = _playerPos.y - (_currentSpr.height / 2);
-			
-			
-			if (_currentSpr.x < FlxG.worldBounds.left && !_changingRoom) 
+
+			if (_currentSpr.x <= FlxG.worldBounds.left && !_changingRoom) 
 			{
-				//_currentSpr.x = FlxG.worldBounds.left;
-				//_playerPos.x = _currentSpr.x + (_currentSpr.width / 2);
 				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
 				Reg.levelX--;
-				_offsetX = _tmBackground.x - _tmBackground.width;
-				_offsetY = _tmBackground.y;
-				_destX = Std.int(_tmBackground.x - _currentSpr.width - 4);
+				_destX = Std.int(_tmBackground.width - _currentSpr.width - 4);
 				_destY = Std.int(_currentSpr.y);
-				FlxG.camera.setBounds(_offsetX, _offsetY, _tmBackground.width * 2, _tmBackground.height, true);
-				trace(FlxG.worldBounds.left + " " + FlxG.worldBounds.top + " " + FlxG.worldBounds.right + " " + FlxG.worldBounds.bottom);
 				changeRoomsStart();
 				
 			}
-			if (_currentSpr.x + _currentSpr.width > FlxG.worldBounds.right && !_changingRoom) 
+			if (_currentSpr.x + _currentSpr.width >= FlxG.worldBounds.right && !_changingRoom) 
 			{
-				// RIGHT
-				//_currentSpr.x = FlxG.worldBounds.right - _currentSpr.width;
-				//_playerPos.x = _currentSpr.x + (_currentSpr.width / 2);
 				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
 				Reg.levelX++;
-				_offsetX = _tmBackground.x + _tmBackground.width;
-				_offsetY = _tmBackground.y;
-				_destX =  Std.int(_offsetX + 4);
+				_destX =  Std.int(4);
 				_destY = Std.int(_currentSpr.y);
-				FlxG.camera.setBounds(_tmBackground.x, _offsetY, _tmBackground.width * 2, _tmBackground.height, true);
-				trace(FlxG.worldBounds.left + " " + FlxG.worldBounds.top + " " + FlxG.worldBounds.right + " " + FlxG.worldBounds.bottom);
 				changeRoomsStart();
 			}
-			if (_currentSpr.y < FlxG.worldBounds.top && !_changingRoom)
+			if (_currentSpr.y <= FlxG.worldBounds.top && !_changingRoom)
 			{
-				//_currentSpr.y = FlxG.worldBounds.top;
-				//_playerPos.y = _currentSpr.y + (_currentSpr.height / 2);
 				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
 				Reg.levelY--;
-				_offsetX = _tmBackground.x;
-				_offsetY = _tmBackground.y - _tmBackground.height;
 				_destX = Std.int(_currentSpr.x);
-				_destY = Std.int(_tmBackground.y - _currentSpr.height - 4);
-				FlxG.camera.setBounds(_offsetX, _offsetY, _tmBackground.width, _tmBackground.height * 2, true);
-				trace(FlxG.worldBounds.left + " " + FlxG.worldBounds.top + " " + FlxG.worldBounds.right + " " + FlxG.worldBounds.bottom);
+				_destY = Std.int(_tmBackground.height - _currentSpr.height - 4);
 				changeRoomsStart();
 			}
-			if (_currentSpr.y + _currentSpr.height > FlxG.worldBounds.bottom && !_changingRoom)
+			if (_currentSpr.y + _currentSpr.height >= FlxG.worldBounds.bottom && !_changingRoom)
 			{
-				//_currentSpr.y = FlxG.worldBounds.bottom - _currentSpr.height;
-				//_playerPos.y = _currentSpr.y + (_currentSpr.height / 2);
 				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
 				Reg.levelY++;
-				_offsetX = _tmBackground.x;
-				_offsetY = _tmBackground.y + _tmBackground.height;
 				_destX = Std.int(_currentSpr.x);
-				_destY =  Std.int(_offsetY + 4);
-				FlxG.camera.setBounds(_offsetX, _tmBackground.y, _tmBackground.width, _tmBackground.height * 2, true);
-				trace(FlxG.worldBounds.left + " " + FlxG.worldBounds.top + " " + FlxG.worldBounds.right + " " + FlxG.worldBounds.bottom);
+				_destY =  Std.int(4);
 				changeRoomsStart();
 				
 			}

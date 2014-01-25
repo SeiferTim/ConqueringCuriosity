@@ -1,5 +1,6 @@
 package ;
 
+import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
 import flixel.util.FlxGradient;
@@ -20,14 +21,14 @@ class BalanceMeter extends FlxGroup
 	{
 		super(0);
 		
-		_border = FlxGradient.createGradientFlxSprite(96, 8, [0xffE2E2E2, 0xffdbdbdb, 0xffd1d1d1, 0xfffefefe]);
-		_border.x = 4;
+		_border = FlxGradient.createGradientFlxSprite(FlxG.width - 40, 8, [0xffE2E2E2, 0xffdbdbdb, 0xffd1d1d1, 0xfffefefe]);
+		_border.x = 20;
 		_border.y = 4;
 		_border.scrollFactor.x = _border.scrollFactor.y = 0;
 		add(_border);
 		
-		_back = FlxGradient.createGradientFlxSprite(94, 6, [0xffff0000,  0xffffffff, 0xff0000ff],1,180);
-		_back.x = 5;
+		_back = FlxGradient.createGradientFlxSprite(FlxG.width - 42, 6, [0xffff0000,  0xffffffff, 0xff0000ff],1,180);
+		_back.x = 21;
 		_back.y = 5;
 		_back.scrollFactor.x = _back.scrollFactor.y = 0;
 		add(_back);
