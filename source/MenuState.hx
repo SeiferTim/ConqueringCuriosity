@@ -17,6 +17,11 @@ import flixel.util.FlxMath;
  */
 class MenuState extends FlxState
 {
+	
+	private var _btnPlay:FlxButton;
+	private var _btnOptions:FlxButton;
+	private var _leaving:Bool = false;
+	private var _loading:Bool = true;
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -31,11 +36,50 @@ class MenuState extends FlxState
 		FlxG.mouse.visible = true;
 		#end
 		
+		_btnPlay = new FlxButton(0,0, "Play", goPlay);
+		_btnOptions = new FlxButton(0, 0, "Options", goOptions);
+		_btnPlay.x = (FlxG.width / 2)  - _btnPlay.width - 10;
+		_btnOptions.x = (FlxG.width / 2) + 10;
+		_btnPlay.y = FlxG.height - _btnPlay.height - 10;
+		_btnOptions.y = FlxG.height - _btnOptions.height - 10;
 		
-		add(new FlxText(0, 0, FlxG.width, "Press X to Play"));
+		add(_btnPlay);
+		add(_btnOptions);
 		
+		FlxG.camera.fade(0xff000000, .33, true, finishLoading);
 		
 		super.create();
+	}
+	
+	private function finishLoading():Void
+	{
+		_loading = false;
+	}
+	
+	private function goPlay():Void 
+	{
+		if (_loading || _leaving)
+			return;
+		_leaving = true;
+		FlxG.camera.fade(0xff000000, .33, false, finishGoPlay, false);
+	}
+	
+	private function finishGoPlay():Void
+	{
+		FlxG.switchState(new PlayState());
+	}
+	
+	private function goOptions():Void
+	{
+		if (_loading || _leaving)
+			return;
+		_leaving = true;
+		FlxG.camera.fade(0xff000000, .33, false, finishGoOptions, false);
+	}
+	
+	private function finishGoOptions():Void
+	{
+		FlxG.switchState(new OptionsState());
 	}
 	
 	/**
@@ -53,10 +97,7 @@ class MenuState extends FlxState
 	override public function update():Void
 	{
 		
-		if (FlxG.keys.anyJustReleased(["X"]))
-		{
-			FlxG.switchState(new PlayState());
-		}
+		
 		
 		super.update();
 	}	

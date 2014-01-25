@@ -14,6 +14,7 @@ import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.text.FlxText;
 import flixel.tile.FlxTilemap;
+import flixel.ui.FlxBar;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 import flixel.util.FlxPoint;
@@ -32,6 +33,9 @@ class PlayState extends FlxState
 	
 	private var _level:FlxOgmoLoader;
 	private var _tmBackground:FlxTilemap;
+	private var _tmpWalls:FlxTilemap;
+	private var _tmpObjects:FlxGroup;
+	private var _tmpForeground:FlxTilemap;
 	
 	private var _grpPlayer:FlxGroup;
 	
@@ -43,6 +47,10 @@ class PlayState extends FlxState
 	
 	private var _burst:FlxEmitterExt;
 	private var _meter:BalanceMeter;
+	private var _loading:Bool = true;
+	
+	private var _playerHealth:Int = 100;
+	private var _barHealth:FlxBar;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -59,8 +67,12 @@ class PlayState extends FlxState
 		
 		_level = new FlxOgmoLoader("assets/maps/level001.oel");
 		_tmBackground = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Backgrounds");
+		//_tmpWalls = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Walls");
+		//_level.loadEntities(loadObject, "Objects");
+		_tmpForeground = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Foregrounds");
 		
 		add(_tmBackground);
+		//add(_tmpObjects);
 		
 		_grpPlayer = new FlxGroup();
 		
@@ -81,7 +93,7 @@ class PlayState extends FlxState
 		_hyde.visible = false;
 		_mode = MODE_J;
 		
-		
+		add(_tmpForeground);
 		
 		
 		_playerPos = new FlxSprite().makeGraphic(1, 1, 0x0);
@@ -93,7 +105,24 @@ class PlayState extends FlxState
 		_meter = new BalanceMeter();
 		add(_meter);
 		
+		_barHealth = new FlxBar(FlxG.width - 100, 4, FlxBar.FILL_LEFT_TO_RIGHT, 96, 8, this, "playerHealth", 0, 100, true);
+		_barHealth.scrollFactor.x = _barHealth.scrollFactor.y = 0;
+		
+		add(_barHealth);
+		
+		FlxG.camera.fade(0xff000000, .33, true, finishLoad);
+		
 		super.create();
+	}
+	
+	private function loadObject(ObjName:String, ObjXML:Xml):Void
+	{
+		
+	}
+	
+	private function finishLoad():Void
+	{
+		_loading = false;
 	}
 	
 	/**
@@ -110,6 +139,12 @@ class PlayState extends FlxState
 	 */
 	override public function update():Void
 	{
+		
+		if (_loading)
+		{
+			super.update();
+			return;
+		}
 		
 		if (_transforming)
 		{
@@ -238,4 +273,16 @@ class PlayState extends FlxState
 		
 		super.update();
 	}	
+	
+	function get_playerHealth():Int 
+	{
+		return _playerHealth;
+	}
+	
+	function set_playerHealth(value:Int):Int 
+	{
+		return _playerHealth = value;
+	}
+	
+	public var playerHealth(get_playerHealth, set_playerHealth):Int;
 }

@@ -19,7 +19,7 @@ class GameClass extends FlxGame
 	 */
 	public function new()
 	{
-		
+		Reg.initGame();
 		#if flash
 		Lib.current.stage.color = 0x000000;
 		#end
