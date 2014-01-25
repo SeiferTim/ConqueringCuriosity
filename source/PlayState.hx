@@ -287,6 +287,8 @@ class PlayState extends FlxState
 			}
 		}
 		
+		FlxG.collide(_tmpObjects, _tmpObjects);
+		
 		super.update();
 	}	
 	

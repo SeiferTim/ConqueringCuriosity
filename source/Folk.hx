@@ -1,6 +1,7 @@
 package ;
 
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.util.FlxAngle;
 import flixel.util.FlxMath;
@@ -18,6 +19,7 @@ class Folk extends FlxSprite
 	private var _scareRange:Int = 100;
 	private static inline var SPEED:Int = 120;
 	private var _runTimer:Float;
+	private var _dir:Int;
 	
 	public function new(X:Float=0, Y:Float=0) 
 	{
@@ -27,6 +29,8 @@ class Folk extends FlxSprite
 		
 		_brain = new FSM();
 		_brain.setState(idle);
+		
+		
 		
 	}
 	
@@ -38,6 +42,35 @@ class Folk extends FlxSprite
 		if (Reg.playState.mode == Reg.playState.MODE_H && FlxMath.distanceBetween(this, Reg.playState.playerPos) < _scareRange)
 		{
 			_brain.setState(runAway);
+		}
+		else
+		{
+			if (FlxRandom.chanceRoll(2))
+			{
+				_runTimer = 0;
+				_dir = FlxRandom.intRanged(0, 3) * 90;
+				_brain.setState(wander);
+			}
+		}
+	}
+	
+	private function wander():Void
+	{
+		var v = FlxAngle.rotatePoint(SPEED * .2, 0, 0, 0, _dir);
+		velocity.x = v.x;
+		velocity.y = v.y;
+		if (Reg.playState.mode == Reg.playState.MODE_H && FlxMath.distanceBetween(this, Reg.playState.playerPos) < _scareRange)
+		{
+			_brain.setState(runAway);
+		}
+		else
+		{
+			if (_runTimer > 3)
+				_brain.setState(idle);
+			else
+			{
+				_runTimer += FlxG.elapsed * FlxRandom.intRanged(1,5);
+			}
 		}
 	}
 	
