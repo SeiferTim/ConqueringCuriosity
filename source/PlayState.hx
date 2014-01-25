@@ -32,6 +32,7 @@ class PlayState extends FlxState
 {
 	private inline static var SPEED_J:Int = 100;
 	private inline static var SPEED_H:Int = 80;
+	private inline static var TRANSFORM_SPEED:Float = .3;
 	
 	public  var MODE_J:Int = 0;
 	public  var MODE_H:Int = 1;
@@ -42,6 +43,14 @@ class PlayState extends FlxState
 	private var _tmWalls:FlxTilemap;
 	private var _grpObjects:FlxGroup;
 	private var _tmForeground:FlxTilemap;
+	
+	private var _newlevel:FlxOgmoLoader;
+	private var _newtmBackground:FlxTilemap;
+	private var _newtmWalls:FlxTilemap;
+	private var _newgrpObjects:FlxGroup;
+	private var _newtmForeground:FlxTilemap;
+	
+	
 	
 	private var _grpPlayer:FlxGroup;
 	
@@ -59,6 +68,19 @@ class PlayState extends FlxState
 	private var _barHealth:FlxBar;
 	private var _twnAlphaTrans:FlxTween;
 	private var _twnScaleTrans:FlxTween;
+	private var _changingRoom:Bool = false;
+	
+	private var _destX:Int = -1;
+	private var _destY:Int = -1;
+	
+	private var _twnRoom:FlxTween;
+	
+	private var _offsetX:Float = 0;
+	private var _offsetY:Float = 0;
+	
+	
+	
+	
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -72,18 +94,26 @@ class PlayState extends FlxState
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.visible = false;
 		#end
-		
-		_level = new FlxOgmoLoader("assets/maps/level001.oel");
+		trace(Reg.levels[Reg.levelX][Reg.levelY]);
+		_level = new FlxOgmoLoader(Reg.levels[Reg.levelX][Reg.levelY]);
+		_grpObjects = new FlxGroup();
 		_tmBackground = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Backgrounds");
+		_newtmBackground = new FlxTilemap();
+		_newtmBackground.kill();
 		_tmWalls = _level.loadTilemap("assets/images/walls.png", 16, 16, "Walls");
+		_newtmWalls = new FlxTilemap();
+		_newtmWalls.kill();
 		//_level.loadEntities(loadObject, "Objects");
 		_tmForeground = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Foregrounds");
+		_newtmForeground = new FlxTilemap();
 		
 		add(_tmBackground);
+		add(_newtmBackground);
 		_grpObjects = new FlxGroup();
 		
 		add(_grpObjects);
 		add(_tmWalls);
+		add(_newtmWalls);
 		
 		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
 		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
@@ -122,14 +152,14 @@ class PlayState extends FlxState
 		_mode = MODE_J;
 		
 		add(_tmForeground);
-		
+		add(_newtmForeground);
+		_newtmForeground.kill();
 		
 		//_playerPos = new FlxSprite().makeGraphic(1, 1, 0x0);
 		//add(_playerPos);
 		
 		//FlxSpriteUtil.screenCenter(_playerPos);
 		
-		FlxG.camera.follow(_playerPos, FlxCamera.STYLE_LOCKON);
 		
 		_meter = new BalanceMeter();
 		add(_meter);
@@ -139,14 +169,74 @@ class PlayState extends FlxState
 		
 		add(_barHealth);
 		
+		FlxG.camera.follow(_jeckyl, FlxCamera.STYLE_LOCKON);
+		
+				
 		FlxG.camera.fade(0xff000000, .33, true, finishLoad);
 		
 		super.create();
 	}
 	
-	private function loadObject(ObjName:String, ObjXML:Xml):Void
+	private function changeRoomsStart():Void
+	{
+		if (_changingRoom)
+			return;
+		_changingRoom = true;
+		//_twnRoom = FlxTween.multiVar(_sprBlack, { alpha:1 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, callback: changeRoomsStartDone } );
+		_level = new FlxOgmoLoader(Reg.levels[Reg.levelX][Reg.levelY]);
+		
+		
+		//_level = new _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Backgrounds");
+		replace(_newtmBackground, _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Backgrounds"));
+		replace(_newtmWalls, _level.loadTilemap("assets/images/walls.png", 16, 16, "Walls"));
+		_level.loadEntities(loadObject, "Objects");
+		replace(_newtmForeground , _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Foregrounds"));
+		_newtmWalls.x = _newtmForeground.x = _newtmBackground.x = _offsetX;
+		_newtmWalls.y = _newtmForeground.y = _newtmBackground.y = _offsetY;
+		
+		_twnRoom = FlxTween.multiVar(_currentSpr, { x: _destX, y: _destY }, 1, {type:FlxTween.ONESHOT, ease:FlxEase.quartInOut, complete:changeRoomsStartDone } );
+		
+		
+	}
+	
+	private function changeRoomsStartDone(T:FlxTween):Void
 	{
 		
+		_tmBackground.kill();
+		_tmForeground.kill();
+		_tmWalls.kill();
+		//_grpObjects.kill();
+		_tmBackground.destroy();
+		_tmForeground.destroy();
+		_tmWalls.destroy();
+		//_grpObjects.destroy();
+		for (i in _grpObjects.members)
+		{
+			if (cast(i, FlxSprite).x < _newtmBackground.x || cast(i, FlxSprite).x > _newtmBackground.x + _newtmBackground.width || cast(i, FlxSprite).y < _newtmBackground.y || cast(i, FlxSprite).y > _newtmBackground.y + _newtmBackground.height)
+			{
+				cast(i, FlxSprite).kill();
+				cast(i, FlxSprite).destroy();	
+			}
+		}
+		//_tmBackground = _newtmBackground;
+		//_tmForeground = _newtmForeground;
+		//_tmWalls = _newtmWalls;
+		//_newtmWalls = null;
+		//_newtmBackground = null;
+		//_newtmForeground = null;
+		
+		replace(_tmBackground, _newtmBackground);
+		replace(_tmForeground, _newtmForeground);
+		replace(_tmWalls, _newtmWalls);
+		_changingRoom = false;
+		
+		
+	}
+	
+	
+	private function loadObject(ObjName:String, ObjXML:Xml):Void
+	{
+		// use offsetX and offsetY!!!!
 	}
 	
 	private function finishLoad():Void
@@ -169,7 +259,7 @@ class PlayState extends FlxState
 	override public function update():Void
 	{
 		
-		if (_loading)
+		if (_loading || _changingRoom)
 		{
 			super.update();
 			return;
@@ -212,47 +302,15 @@ class PlayState extends FlxState
 			{
 				if (_mode == MODE_J)
 				{
-					_mode = MODE_H;
-					_currentSpr = _hyde;
-					_hyde.scale.x = _hyde.scale.y = .5;
-					//_jeckyl.visible = false;
+					switchToH();
 					
-					_hyde.x = _jeckyl.x + (_jeckyl.width / 2) - (_hyde.width / 2);
-					_hyde.y = _jeckyl.y + (_jeckyl.height / 2) - (_hyde.height / 2);
-					_twnAlphaTrans  = FlxTween.multiVar(_hyde, {alpha: 1 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneTransform } );
-					_twnScaleTrans  = FlxTween.multiVar(_hyde.scale, {x: 1, y:1 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn } );
-					
-					_hyde.visible = true;
-					_hyde.alpha = 0;
-					_transforming = true;
-					_hyde.velocity.x = _hyde.velocity.y = 0;
-					_jeckyl.velocity.x = _jeckyl.velocity.y = 0;
-					FlxG.camera.flash(0xffffffff, FlxG.elapsed * 6);
-					_burst.x = _currentSpr.x + (_currentSpr.width/2);
-					_burst.y = _currentSpr.y + (_currentSpr.height/2);
-					_burst.start(true, 0, 0, 100, FlxG.elapsed * 20);
 					
 				}
 				else if (_mode == MODE_H)
 				{
-					_mode = MODE_J;
-					_currentSpr = _jeckyl;
-					_twnAlphaTrans  = FlxTween.multiVar(_hyde, {alpha: 0 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn, complete:DoneTransform } );
-					_twnScaleTrans  = FlxTween.multiVar(_hyde.scale, {x: .5, y: .5 }, .33, { type: FlxTween.ONESHOT, ease:FlxEase.quartIn } );
 					
+					switchToJ();
 					
-					_jeckyl.x = _hyde.x + (_hyde.width / 2) - (_jeckyl.width / 2);
-					_jeckyl.y = _hyde.y + (_hyde.height / 2) - (_jeckyl.height / 2);
-					
-					_jeckyl.visible = true;
-					//_hyde.visible = false;
-					_transforming = true;
-					_hyde.velocity.x = _hyde.velocity.y = 0;
-					_jeckyl.velocity.x = _jeckyl.velocity.y = 0;
-					FlxG.camera.flash(0xffffffff, FlxG.elapsed * 6);
-					_burst.x = _currentSpr.x + (_currentSpr.width/2);
-					_burst.y = _currentSpr.y + (_currentSpr.height/2);
-					_burst.start(true, 0, 0, 100, FlxG.elapsed * 20);
 				}
 			}
 			else
@@ -290,29 +348,54 @@ class PlayState extends FlxState
 			//_currentSpr.y = _playerPos.y - (_currentSpr.height / 2);
 			
 			
-			if (_currentSpr.x < FlxG.worldBounds.left) 
+			if (_currentSpr.x < FlxG.worldBounds.left && !_changingRoom) 
 			{
 				_currentSpr.x = FlxG.worldBounds.left;
 				//_playerPos.x = _currentSpr.x + (_currentSpr.width / 2);
-				_currentSpr.velocity.x = 0;
+				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
+				Reg.levelX--;
+				_destX = 4;
+				_destY = Std.int(_currentSpr.y);
+				_offsetX = _tmBackground.x + _tmBackground.width;
+				_offsetY = _tmBackground.y;
+				changeRoomsStart();
+				
 			}
-			if (_currentSpr.x + _currentSpr.width > FlxG.worldBounds.right) 
+			if (_currentSpr.x + _currentSpr.width > FlxG.worldBounds.right && !_changingRoom) 
 			{
 				_currentSpr.x = FlxG.worldBounds.right - _currentSpr.width;
 				//_playerPos.x = _currentSpr.x + (_currentSpr.width / 2);
-				_currentSpr.velocity.x = 0;
+				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
+				Reg.levelX++;
+				_destX =  Std.int(FlxG.width - _currentSpr.width - 4);
+				_destY = Std.int(_currentSpr.y);
+				_offsetX = _tmBackground.x - _tmBackground.width;
+				_offsetY = _tmBackground.y;
+				changeRoomsStart();
 			}
-			if (_currentSpr.y < FlxG.worldBounds.top)
+			if (_currentSpr.y < FlxG.worldBounds.top && !_changingRoom)
 			{
 				_currentSpr.y = FlxG.worldBounds.top;
 				//_playerPos.y = _currentSpr.y + (_currentSpr.height / 2);
-				_currentSpr.velocity.y = 0;
+				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
+				Reg.levelY--;
+				_destX = Std.int(_currentSpr.x);
+				_destY = 4;
+				_offsetX = _tmBackground.x;
+				_offsetY = _tmBackground.y - _tmBackground.height;
+				changeRoomsStart();
 			}
-			if (_currentSpr.y + _currentSpr.height > FlxG.worldBounds.bottom)
+			if (_currentSpr.y + _currentSpr.height > FlxG.worldBounds.bottom && !_changingRoom)
 			{
 				_currentSpr.y = FlxG.worldBounds.bottom - _currentSpr.height;
 				//_playerPos.y = _currentSpr.y + (_currentSpr.height / 2);
-				_currentSpr.velocity.y = 0;
+				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
+				Reg.levelY++;
+				_destX = Std.int(_currentSpr.x);
+				_destY = Std.int(FlxG.height - _currentSpr.height - 4);
+				_offsetX = _tmBackground.x;
+				_offsetY = _tmBackground.y + _tmBackground.height;
+				changeRoomsStart();
 				
 			}
 			
@@ -345,11 +428,68 @@ class PlayState extends FlxState
 		
 	}	
 	
-	private function DoneTransform(T:FlxTween):Void
+	private function switchToH():Void
 	{
-		if (_mode == MODE_H)
-			_jeckyl.visible = false;
+		_mode = MODE_H;
+		_currentSpr = _hyde;
+		_hyde.scale.x = _hyde.scale.y = .5;
+		//_jeckyl.visible = false;
+		
+		_hyde.x = _jeckyl.x + (_jeckyl.width / 2) - (_hyde.width / 2);
+		_hyde.y = _jeckyl.y + (_jeckyl.height / 2) - (_hyde.height / 2);
+		FlxG.camera.follow(_hyde, FlxCamera.STYLE_LOCKON);
+		_twnAlphaTrans  = FlxTween.multiVar(_hyde, {alpha: 1 }, TRANSFORM_SPEED, { type: FlxTween.ONESHOT, ease:FlxEase.bounceOut, complete:DoneTransform } );
+		_twnScaleTrans  = FlxTween.multiVar(_hyde.scale, {x: 1, y:1 }, TRANSFORM_SPEED, { type: FlxTween.ONESHOT, ease:FlxEase.bounceOut } );
+		
+		_hyde.visible = true;
+		_hyde.alpha = 0;
+		_transforming = true;
+		_hyde.velocity.x = _hyde.velocity.y = 0;
+		_jeckyl.velocity.x = _jeckyl.velocity.y = 0;
+		FlxG.camera.flash(0xffffffff, FlxG.elapsed * 6);
+		_burst.x = _currentSpr.x + (_currentSpr.width/2);
+		_burst.y = _currentSpr.y + (_currentSpr.height/2);
+		_burst.start(true, 0, 0, 100, FlxG.elapsed * 20);
+	}
+	
+	private function switchToJ():Void
+	{
+		_mode = MODE_J;
+		_currentSpr = _jeckyl;
+		
+		
+		_jeckyl.x = _hyde.x + (_hyde.width / 2) - (_jeckyl.width / 2);
+		_jeckyl.y = _hyde.y + (_hyde.height / 2) - (_jeckyl.height / 2);
+		FlxG.camera.follow(_jeckyl, FlxCamera.STYLE_LOCKON);
+		_twnAlphaTrans  = FlxTween.multiVar(_hyde, {alpha: 0 }, TRANSFORM_SPEED, { type: FlxTween.ONESHOT, ease:FlxEase.bounceIn, complete:DoneTransform } );
+		_twnScaleTrans  = FlxTween.multiVar(_hyde.scale, {x: .5, y: .5 }, TRANSFORM_SPEED, { type: FlxTween.ONESHOT, ease:FlxEase.bounceIn } );
+		
+		
+		_jeckyl.visible = true;
+		//_hyde.visible = false;
+		_transforming = true;
+		_hyde.velocity.x = _hyde.velocity.y = 0;
+		_jeckyl.velocity.x = _jeckyl.velocity.y = 0;
+		FlxG.camera.flash(0xffffffff, FlxG.elapsed * 6);
+		_burst.x = _currentSpr.x + (_currentSpr.width/2);
+		_burst.y = _currentSpr.y + (_currentSpr.height/2);
+		_burst.start(true, 0, 0, 100, FlxG.elapsed * 20);
+	}
+	
+	private function DoneTransform(T:FlxTween):Void
+	{	
+		_twnAlphaTrans.cancel();
+		_twnScaleTrans.cancel();
 		_transforming = false;
+		if (_mode == MODE_H)
+		{
+			_jeckyl.visible = false;
+			if (_hyde.overlaps(_tmWalls))
+			{
+				switchToJ();
+			}
+		}
+		
 	}
 	
 	private function playerHitsWall(Spr:Dynamic, Walls:Dynamic):Void

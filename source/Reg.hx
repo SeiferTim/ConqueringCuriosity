@@ -43,6 +43,9 @@ class Reg
 	
 	static public var playState:PlayState;
 	
+	static public var levelX:Int = 0;
+	static public var levelY:Int = 0;
+	
 	static public function initGame():Void
 	{
 		if (GameInitialized) return;
@@ -59,6 +62,19 @@ class Reg
 		#if desktop
 		IsFullscreen = (saves["flixel"].data.fullscreen != null) ? saves["flixel"].data.fullscreen : true;
 		#end
+		
+		levels.push(new Array());
+		levels.push(new Array());
+		levels.push(new Array());
+		levels[0].push("assets/maps/level001.oel");
+		levels[0].push("assets/maps/level002.oel");
+		levels[0].push("assets/maps/level003.oel");
+		levels[1].push("assets/maps/level004.oel");
+		levels[1].push("assets/maps/level005.oel");
+		levels[1].push("assets/maps/level006.oel");
+		levels[2].push("assets/maps/level007.oel");
+		levels[2].push("assets/maps/level008.oel");
+		levels[2].push("assets/maps/level009.oel");
 		
 		
 		
