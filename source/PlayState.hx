@@ -174,6 +174,16 @@ class PlayState extends FlxState
 				
 		FlxG.camera.fade(0xff000000, .33, true, finishLoad);
 		
+		
+		FlxG.watch.add(_jeckyl, "x");
+		FlxG.watch.add(_jeckyl, "y");
+		FlxG.watch.add(this, "_offsetX");
+		FlxG.watch.add(this, "_offsetY");
+		FlxG.watch.add(FlxG.camera.bounds, "left");
+		FlxG.watch.add(FlxG.camera.bounds, "top");
+		FlxG.watch.add(FlxG.camera.bounds, "right");
+		FlxG.watch.add(FlxG.camera.bounds, "bottom");
+		
 		super.create();
 	}
 	
@@ -193,7 +203,7 @@ class PlayState extends FlxState
 		replace(_newtmForeground , _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Foregrounds"));
 		_newtmWalls.x = _newtmForeground.x = _newtmBackground.x = _offsetX;
 		_newtmWalls.y = _newtmForeground.y = _newtmBackground.y = _offsetY;
-		
+		FlxG.camera.follow(_currentSpr, FlxCamera.STYLE_TOPDOWN_TIGHT);
 		_twnRoom = FlxTween.multiVar(_currentSpr, { x: _destX, y: _destY }, 1, {type:FlxTween.ONESHOT, ease:FlxEase.quartInOut, complete:changeRoomsStartDone } );
 		
 		
@@ -228,6 +238,10 @@ class PlayState extends FlxState
 		replace(_tmBackground, _newtmBackground);
 		replace(_tmForeground, _newtmForeground);
 		replace(_tmWalls, _newtmWalls);
+		
+		FlxG.camera.follow(_currentSpr, FlxCamera.STYLE_TOPDOWN);
+		FlxG.camera.setBounds(_tmBackground.x, _tmBackground.y, _tmBackground.width, _tmBackground.height, true);
+	
 		_changingRoom = false;
 		
 		
@@ -354,23 +368,28 @@ class PlayState extends FlxState
 				//_playerPos.x = _currentSpr.x + (_currentSpr.width / 2);
 				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
 				Reg.levelX--;
-				_destX = 4;
-				_destY = Std.int(_currentSpr.y);
-				_offsetX = _tmBackground.x + _tmBackground.width;
+				_offsetX = _tmBackground.x - _tmBackground.width;
 				_offsetY = _tmBackground.y;
+				_destX = Std.int(_tmBackground.x - _currentSpr.width - 4);
+				_destY = Std.int(_currentSpr.y);
+				FlxG.camera.setBounds(_offsetX, _offsetY, _tmBackground.width * 2, _tmBackground.height, true);
+				trace(FlxG.worldBounds.left + " " + FlxG.worldBounds.top + " " + FlxG.worldBounds.right + " " + FlxG.worldBounds.bottom);
 				changeRoomsStart();
 				
 			}
 			if (_currentSpr.x + _currentSpr.width > FlxG.worldBounds.right && !_changingRoom) 
 			{
+				// RIGHT
 				_currentSpr.x = FlxG.worldBounds.right - _currentSpr.width;
 				//_playerPos.x = _currentSpr.x + (_currentSpr.width / 2);
 				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
 				Reg.levelX++;
-				_destX =  Std.int(FlxG.width - _currentSpr.width - 4);
-				_destY = Std.int(_currentSpr.y);
-				_offsetX = _tmBackground.x - _tmBackground.width;
+				_offsetX = _tmBackground.x + _tmBackground.width;
 				_offsetY = _tmBackground.y;
+				_destX =  Std.int(_offsetX + 4);
+				_destY = Std.int(_currentSpr.y);
+				FlxG.camera.setBounds(_tmBackground.x, _offsetY, _tmBackground.width * 2, _tmBackground.height, true);
+				trace(FlxG.worldBounds.left + " " + FlxG.worldBounds.top + " " + FlxG.worldBounds.right + " " + FlxG.worldBounds.bottom);
 				changeRoomsStart();
 			}
 			if (_currentSpr.y < FlxG.worldBounds.top && !_changingRoom)
@@ -379,10 +398,12 @@ class PlayState extends FlxState
 				//_playerPos.y = _currentSpr.y + (_currentSpr.height / 2);
 				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
 				Reg.levelY--;
-				_destX = Std.int(_currentSpr.x);
-				_destY = 4;
 				_offsetX = _tmBackground.x;
 				_offsetY = _tmBackground.y - _tmBackground.height;
+				_destX = Std.int(_currentSpr.x);
+				_destY = Std.int(_tmBackground.y - _currentSpr.height - 4);
+				FlxG.camera.setBounds(_offsetX, _offsetY, _tmBackground.width, _tmBackground.height * 2, true);
+				trace(FlxG.worldBounds.left + " " + FlxG.worldBounds.top + " " + FlxG.worldBounds.right + " " + FlxG.worldBounds.bottom);
 				changeRoomsStart();
 			}
 			if (_currentSpr.y + _currentSpr.height > FlxG.worldBounds.bottom && !_changingRoom)
@@ -391,10 +412,12 @@ class PlayState extends FlxState
 				//_playerPos.y = _currentSpr.y + (_currentSpr.height / 2);
 				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
 				Reg.levelY++;
-				_destX = Std.int(_currentSpr.x);
-				_destY = Std.int(FlxG.height - _currentSpr.height - 4);
 				_offsetX = _tmBackground.x;
 				_offsetY = _tmBackground.y + _tmBackground.height;
+				_destX = Std.int(_currentSpr.x);
+				_destY =  Std.int(_offsetY + 4);
+				FlxG.camera.setBounds(_offsetX, _tmBackground.y, _tmBackground.width, _tmBackground.height * 2, true);
+				trace(FlxG.worldBounds.left + " " + FlxG.worldBounds.top + " " + FlxG.worldBounds.right + " " + FlxG.worldBounds.bottom);
 				changeRoomsStart();
 				
 			}
