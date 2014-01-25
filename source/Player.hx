@@ -44,7 +44,10 @@ class Player extends FlxSprite
 		else
 			velocity.x = 0;
 		
-		
+		if (x < FlxG.worldBounds.left) x += 4;
+		if (x + width > FlxG.worldBounds.right) x -= 4;
+		if (y < FlxG.worldBounds.top) y += 4;
+		if (y + height > FlxG.worldBounds.bottom) y -= 4;
 		
 		super.update();
 	}

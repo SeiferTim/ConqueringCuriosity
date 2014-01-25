@@ -78,7 +78,7 @@
   <Tilesets>
     <Tileset>
       <Name>TileSet001</Name>
-      <FilePath>..\..\..\..\..\..\..\Users\Tim\Documents\GitHub\HydeSMASH\assets\images\tilemap-1.png</FilePath>
+      <FilePath>..\images\tilemap-1.png</FilePath>
       <TileSize>
         <Width>16</Width>
         <Height>16</Height>
