@@ -3,6 +3,11 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.system.resolution.FillResolutionPolicy;
+import flixel.system.resolution.FixedResolutionPolicy;
+import flixel.system.resolution.RatioResolutionPolicy;
+import flixel.system.resolution.RelativeResolutionPolicy;
+import flixel.system.resolution.StageSizeResolutionPolicy;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
@@ -17,12 +22,18 @@ class MenuState extends FlxState
 	 */
 	override public function create():Void
 	{
+		
+		FlxG.resolutionPolicy = new RatioResolutionPolicy();
 		// Set a background color
 		FlxG.cameras.bgColor = 0xff131c1b;
 		// Show the mouse (in case it hasn't been disabled)
 		#if !FLX_NO_MOUSE
-		FlxG.mouse.visible = false;
+		FlxG.mouse.visible = true;
 		#end
+		
+		
+		add(new FlxText(0, 0, FlxG.width, "Press X to Play"));
+		
 		
 		super.create();
 	}
@@ -41,6 +52,12 @@ class MenuState extends FlxState
 	 */
 	override public function update():Void
 	{
+		
+		if (FlxG.keys.anyJustReleased(["X"]))
+		{
+			FlxG.switchState(new PlayState());
+		}
+		
 		super.update();
 	}	
 }

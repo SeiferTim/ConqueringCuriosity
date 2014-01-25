@@ -34,4 +34,31 @@ class Reg
 	 * Especially useful for setting up multiple save slots.
 	 */
 	static public var saves:Array<FlxSave> = [];
+	
+	static public var GameInitialized:Bool = false;
+	
+	static public inline var GameWidth:Int = 640;
+	static public inline var GameHeight:Int = 480;
+	
+	static public function initGame():Void
+	{
+		if (GameInitialized) return;
+		//save = new FlxSave();
+		//save.bind("flixel");
+		
+		//if (save.data.volume != null)
+		//{
+		//	FlxG.sound.volume = save.data.volume;
+		//}
+		//else
+		//	FlxG.sound.volume = 0.5;
+		
+		#if desktop
+		//IsFullscreen = (save.data.fullscreen != null) ? save.data.fullscreen : true;
+		#end
+		
+		
+		
+		GameInitialized = true;
+	}
 }
