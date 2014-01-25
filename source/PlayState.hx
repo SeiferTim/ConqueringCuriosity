@@ -203,7 +203,7 @@ class PlayState extends FlxState
 		replace(_newtmForeground , _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Foregrounds"));
 		_newtmWalls.x = _newtmForeground.x = _newtmBackground.x = _offsetX;
 		_newtmWalls.y = _newtmForeground.y = _newtmBackground.y = _offsetY;
-		FlxG.camera.follow(_currentSpr, FlxCamera.STYLE_TOPDOWN_TIGHT);
+		//FlxG.camera.follow(_currentSpr, FlxCamera.STYLE_TOPDOWN_TIGHT);
 		_twnRoom = FlxTween.multiVar(_currentSpr, { x: _destX, y: _destY }, 1, {type:FlxTween.ONESHOT, ease:FlxEase.quartInOut, complete:changeRoomsStartDone } );
 		
 		
@@ -239,7 +239,7 @@ class PlayState extends FlxState
 		replace(_tmForeground, _newtmForeground);
 		replace(_tmWalls, _newtmWalls);
 		
-		FlxG.camera.follow(_currentSpr, FlxCamera.STYLE_TOPDOWN);
+		//FlxG.camera.follow(_currentSpr, FlxCamera.STYLE_TOPDOWN);
 		FlxG.camera.setBounds(_tmBackground.x, _tmBackground.y, _tmBackground.width, _tmBackground.height, true);
 	
 		_changingRoom = false;
@@ -364,7 +364,7 @@ class PlayState extends FlxState
 			
 			if (_currentSpr.x < FlxG.worldBounds.left && !_changingRoom) 
 			{
-				_currentSpr.x = FlxG.worldBounds.left;
+				//_currentSpr.x = FlxG.worldBounds.left;
 				//_playerPos.x = _currentSpr.x + (_currentSpr.width / 2);
 				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
 				Reg.levelX--;
@@ -380,7 +380,7 @@ class PlayState extends FlxState
 			if (_currentSpr.x + _currentSpr.width > FlxG.worldBounds.right && !_changingRoom) 
 			{
 				// RIGHT
-				_currentSpr.x = FlxG.worldBounds.right - _currentSpr.width;
+				//_currentSpr.x = FlxG.worldBounds.right - _currentSpr.width;
 				//_playerPos.x = _currentSpr.x + (_currentSpr.width / 2);
 				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
 				Reg.levelX++;
@@ -394,7 +394,7 @@ class PlayState extends FlxState
 			}
 			if (_currentSpr.y < FlxG.worldBounds.top && !_changingRoom)
 			{
-				_currentSpr.y = FlxG.worldBounds.top;
+				//_currentSpr.y = FlxG.worldBounds.top;
 				//_playerPos.y = _currentSpr.y + (_currentSpr.height / 2);
 				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
 				Reg.levelY--;
@@ -408,7 +408,7 @@ class PlayState extends FlxState
 			}
 			if (_currentSpr.y + _currentSpr.height > FlxG.worldBounds.bottom && !_changingRoom)
 			{
-				_currentSpr.y = FlxG.worldBounds.bottom - _currentSpr.height;
+				//_currentSpr.y = FlxG.worldBounds.bottom - _currentSpr.height;
 				//_playerPos.y = _currentSpr.y + (_currentSpr.height / 2);
 				_currentSpr.velocity.x = _currentSpr.velocity.y = 0;
 				Reg.levelY++;
