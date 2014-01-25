@@ -41,6 +41,8 @@ class Reg
 	static public inline var GameWidth:Int = 640;
 	static public inline var GameHeight:Int = 480;
 	
+	static public var playState:PlayState;
+	
 	static public function initGame():Void
 	{
 		if (GameInitialized) return;

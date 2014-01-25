@@ -18,6 +18,7 @@ import flixel.ui.FlxBar;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 import flixel.util.FlxPoint;
+import flixel.util.FlxRandom;
 import flixel.util.FlxRect;
 import flixel.util.FlxSpriteUtil;
 
@@ -26,10 +27,12 @@ import flixel.util.FlxSpriteUtil;
  */
 class PlayState extends FlxState
 {
-	private inline static var SPEED:Int = 120;
-	private static inline var MODE_J:Int = 0;
-	private static inline var MODE_H:Int = 1;
-	private var _mode:Int = MODE_J;
+	private inline static var SPEED_J:Int = 100;
+	private inline static var SPEED_H:Int = 80;
+	
+	public  var MODE_J:Int = 0;
+	public  var MODE_H:Int = 1;
+	private var _mode:Int = 0;
 	
 	private var _level:FlxOgmoLoader;
 	private var _tmBackground:FlxTilemap;
@@ -57,7 +60,7 @@ class PlayState extends FlxState
 	 */
 	override public function create():Void
 	{
-		
+		Reg.playState = this;
 		// Set a background color
 		FlxG.cameras.bgColor = 0xff131c1b;
 		// Show the mouse (in case it hasn't been disabled)
@@ -72,7 +75,20 @@ class PlayState extends FlxState
 		_tmpForeground = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Foregrounds");
 		
 		add(_tmBackground);
-		//add(_tmpObjects);
+		_tmpObjects = new FlxGroup();
+		
+		add(_tmpObjects);
+		
+		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		_tmpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
 		
 		_grpPlayer = new FlxGroup();
 		
@@ -211,22 +227,22 @@ class PlayState extends FlxState
 			{
 				if (FlxG.keys.anyPressed(["UP"]))
 				{
-					_playerPos.velocity.y = -SPEED;
+					_playerPos.velocity.y = -(_mode == MODE_J ? SPEED_J : SPEED_H);
 				}
 				else if (FlxG.keys.anyPressed(["DOWN"]))
 				{
-					_playerPos.velocity.y = SPEED;
+					_playerPos.velocity.y = (_mode == MODE_J ? SPEED_J : SPEED_H);
 				}
 				else
 					_playerPos.velocity.y = 0;
 				
 				if (FlxG.keys.anyPressed(["LEFT"]))
 				{
-					_playerPos.velocity.x = -SPEED;
+					_playerPos.velocity.x = -(_mode == MODE_J ? SPEED_J : SPEED_H);
 				}
 				else if (FlxG.keys.anyPressed(["RIGHT"]))
 				{
-					_playerPos.velocity.x = SPEED;
+					_playerPos.velocity.x = (_mode == MODE_J ? SPEED_J : SPEED_H);
 				}
 				else
 					_playerPos.velocity.x = 0;
@@ -285,4 +301,18 @@ class PlayState extends FlxState
 	}
 	
 	public var playerHealth(get_playerHealth, set_playerHealth):Int;
+	
+	function get_mode():Int 
+	{
+		return _mode;
+	}
+	
+	public var mode(get_mode, null):Int;
+	
+	function get_playerPos():FlxSprite 
+	{
+		return _playerPos;
+	}
+	
+	public var playerPos(get_playerPos, null):FlxSprite;
 }
