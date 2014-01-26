@@ -12,43 +12,30 @@ import flixel.util.FlxRandom;
  * ...
  * @author Tile Isle
  */
-class Folk extends FlxSprite
+class Policeman extends FlxSprite
 {
-
-	
 	private var _brain:FSM;
-	private var _scareRange:Int = 100;
-	private static inline var SPEED:Int = 120;
+	private var _speed:Int;
 	private var _runTimer:Float;
 	private var _dir:Int;
-	
+	private var _scareRange:Int = 300;
 	
 	public function new(X:Float=0, Y:Float=0) 
 	{
 		super(X, Y);
-		
-		var sprs:Array<String> = [];
-		sprs.push("assets/images/vill girl1.png");
-		
-		loadGraphic(FlxRandom.getObject(sprs), true, true, 24, 24);
-		animation.add("walk-down", [0, 1, 2, 1], 6, true);
-		animation.add("idle-down", [1], 6, false);
-		animation.add("walk-up", [3,4,5,4], 6, true);
-		animation.add("idle-up", [4], 6, false);
-		animation.add("walk-side", [6,7,8,7], 6, true);
-		animation.add("idle-side", [7], 6, false);
-		facing = FlxObject.DOWN;
+		_speed = 100;
+		loadGraphic("assets/images/policepix.png", true, true);
+		animation.add("walk-side", [0, 1, 0, 2], 6, true);
+		animation.add("idle-side", [0]);
+		animation.add("walk-down", [3, 4, 3, 5], 6, true);
+		animation.add("idle-down", [3]);
+		animation.add("walk-up", [6, 7, 6, 8], 6, true);
+		animation.add("idle-up", [6]);
 		animation.play("idle-down");
-		width = 12;
-		offset.x = 6;
-		height = 14;
-		offset.y = 8;
+		facing = FlxObject.DOWN;
 		
 		_brain = new FSM();
 		_brain.setState(idle);
-		
-		
-		
 	}
 	
 	private function idle():Void
@@ -58,7 +45,7 @@ class Folk extends FlxSprite
 		
 		if (Reg.playState.mode == Reg.playState.MODE_H && FlxMath.distanceBetween(this, Reg.playState.currentSpr) < _scareRange)
 		{
-			_brain.setState(runAway);
+			_brain.setState(runTowards);
 		}
 		else
 		{
@@ -73,9 +60,10 @@ class Folk extends FlxSprite
 	
 	private function wander():Void
 	{
-		var v = FlxAngle.rotatePoint(SPEED * .2, 0, 0, 0, _dir);
+		var v = FlxAngle.rotatePoint(_speed * .2, 0, 0, 0, _dir);
 		velocity.x = v.x;
 		velocity.y = v.y;
+		
 		
 		if (velocity.x > 0 && Math.abs(velocity.x) > Math.abs(velocity.y))
 			facing = FlxObject.RIGHT;
@@ -85,9 +73,10 @@ class Folk extends FlxSprite
 			facing = FlxObject.DOWN;
 		else if (velocity.y < 0)
 			facing = FlxObject.UP;
+			
 		if (Reg.playState.mode == Reg.playState.MODE_H && FlxMath.distanceBetween(this, Reg.playState.currentSpr) < _scareRange)
 		{
-			_brain.setState(runAway);
+			_brain.setState(runTowards);
 		}
 		else
 		{
@@ -100,12 +89,13 @@ class Folk extends FlxSprite
 		}
 	}
 	
-	private function runAway():Void
+	private function runTowards():Void
 	{
-		var a:Float = FlxAngle.angleBetween(Reg.playState.currentSpr, this, true);
-		var v:FlxPoint = FlxAngle.rotatePoint(SPEED, 0, 0, 0, a);
+		var a:Float = FlxAngle.angleBetween(this, Reg.playState.currentSpr, true);
+		var v:FlxPoint = FlxAngle.rotatePoint(_speed, 0, 0, 0, a);
 		velocity.x = v.x;
 		velocity.y = v.y;
+		
 		if (velocity.x > 0 && Math.abs(velocity.x) > Math.abs(velocity.y))
 			facing = FlxObject.RIGHT;
 		else if (velocity.x < 0 && Math.abs(velocity.x) > Math.abs(velocity.y))
@@ -163,5 +153,6 @@ class Folk extends FlxSprite
 		
 		super.update();
 	}
+	
 	
 }
