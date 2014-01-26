@@ -85,7 +85,7 @@ class Reg
 			FlxG.sound.volume = 0.5;
 		
 		#if desktop
-		IsFullscreen = (saves["flixel"].data.fullscreen != null) ? saves["flixel"].data.fullscreen : true;
+		//IsFullscreen = (saves["flixel"].data.fullscreen != null) ? saves["flixel"].data.fullscreen : true;
 		#end
 		
 		levels.push(new Array());
