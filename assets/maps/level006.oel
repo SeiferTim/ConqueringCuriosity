@@ -150,7 +150,7 @@
     <obstical id="12" x="640" y="320" type="tree" />
     <obstical id="13" x="656" y="320" type="debris" />
     <obstical id="14" x="672" y="320" type="door" />
-    <obstical id="15" x="160" y="272" type="gap" />
+    <obstical id="15" x="208" y="288" type="gap" />
     <obstical id="16" x="400" y="288" type="tree" />
     <obstical id="17" x="0" y="400" type="tree" />
     <obstical id="18" x="0" y="384" type="tree" />
@@ -159,6 +159,44 @@
     <obstical id="21" x="0" y="336" type="tree" />
     <obstical id="22" x="0" y="320" type="tree" />
     <obstical id="23" x="0" y="304" type="tree" />
+    <animal id="24" x="144" y="640" type="dog" />
+    <animal id="25" x="704" y="624" type="dog" />
+    <animal id="26" x="848" y="80" type="dog" />
+    <animal id="27" x="848" y="464" type="dog" />
+    <police id="28" x="48" y="144" />
+    <police id="29" x="48" y="400" />
+    <police id="30" x="48" y="608" />
+    <police id="31" x="416" y="656" />
+    <police id="32" x="864" y="672" />
+    <police id="33" x="880" y="288" />
+    <police id="34" x="560" y="48" />
+    <police id="35" x="432" y="224" />
+    <villager id="36" x="32" y="256" />
+    <villager id="37" x="48" y="512" />
+    <villager id="38" x="320" y="640" />
+    <villager id="39" x="624" y="672" />
+    <villager id="40" x="880" y="176" />
+    <villager id="41" x="704" y="48" />
+    <villager id="42" x="448" y="48" />
+    <villager id="43" x="256" y="224" />
+    <villager id="44" x="672" y="432" />
+    <obstical id="45" x="304" y="496" type="gap" />
+    <obstical id="46" x="304" y="560" type="door" />
+    <obstical id="47" x="400" y="496" type="door" />
+    <obstical id="48" x="496" y="496" type="door" />
+    <obstical id="49" x="592" y="496" type="door" />
+    <obstical id="50" x="688" y="496" type="door" />
+    <obstical id="51" x="688" y="544" type="gap" />
+    <obstical id="52" x="592" y="560" type="gap" />
+    <obstical id="53" x="496" y="560" type="gap" />
+    <obstical id="54" x="208" y="192" type="debris" />
+    <obstical id="55" x="16" y="448" type="debris" />
+    <obstical id="56" x="32" y="448" type="debris" />
+    <obstical id="57" x="48" y="448" type="debris" />
+    <obstical id="58" x="64" y="448" type="debris" />
+    <obstical id="59" x="80" y="448" type="debris" />
+    <obstical id="60" x="96" y="448" type="debris" />
+    <obstical id="61" x="208" y="480" type="gap" />
   </Objects>
   <Foregrounds tileset="TileSet001" exportMode="CSV">-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
 -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
