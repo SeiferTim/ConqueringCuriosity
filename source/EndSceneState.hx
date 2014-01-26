@@ -22,6 +22,7 @@ class EndSceneState extends FlxState
 	private var _img03:FlxSprite;
 	private var _glasses:FlxSprite;
 	private var _twn:FlxTween;
+	private var _sTwn:FlxTween;
 	
 	
 	override public function create():Void
@@ -38,7 +39,8 @@ class EndSceneState extends FlxState
 		_img01 = new FlxSprite(0, 0, "assets/images/end-scene-01.png");
 		_img02 = new FlxSprite(0, 0, "assets/images/end-scene-02.png");
 		_img03 = new FlxSprite(0, 0, "assets/images/end-scene-03.png");
-		
+		_img02.y = FlxG.height - _img02.height;
+		_img03.y = FlxG.height - _img03.height;
 		add(_img01);
 		add(_img02);
 		add(_img03);
@@ -48,8 +50,9 @@ class EndSceneState extends FlxState
 		
 		_glasses = new FlxSprite(0, 0, "assets/images/glasses_use.png");
 		add(_glasses);
-		FlxSpriteUtil.screenCenter(_glasses, true, false);
-		_glasses.y = -1000;
+		//FlxSpriteUtil.screenCenter(_glasses, true, false);
+		_glasses.x = 87;
+		_glasses.y = -200;
 		
 		
 		FlxG.camera.fade(0xff000000, .2, true, finishFadeIn);
@@ -68,6 +71,7 @@ class EndSceneState extends FlxState
 	private function finishFadeIn():Void
 	{
 		add( new DialogBox("What is this place?\nA makeshift laboratory?\n\nI feel as if I've been led here...\n             ...but for what purpose?"));
+		//_sTwn = FlxTween.multiVar(_img01, { y:FlxG.height - _img01.height }, 5, { type:FlxTween.PINGPONG } );
 		_whichScene = 1;
 	}
 
@@ -78,6 +82,8 @@ class EndSceneState extends FlxState
 			add(new DialogBox("'Hello, Henry.'\n\n'Hyde!'\n\n'Nice of you to join me... did you\nlike what I've done with your serum?'\n\n'What!?'"));
 			_img01.visible = false;
 			_img02.visible = true;
+			//_sTwn.cancel();
+			//_sTwn = FlxTween.multiVar(_img02, { y:FlxG.height - _img02.height }, 20, { type:FlxTween.PINGPONG } );
 			_whichScene = 3;
 		}
 		else if (_whichScene == 4)
@@ -92,10 +98,12 @@ class EndSceneState extends FlxState
 		}
 		else if (_whichScene == 8)
 		{
+			//_sTwn.cancel();
 			_img02.visible = false;
 			_img03.visible = true;
 			add(new DialogBox("'...I AM IN CONTROL!\n\n\n          MWAHA HAHA HAHAAAA!'\n\n\n\n                               -END-"));
-			_twn = FlxTween.multiVar(_glasses, { y: 60 }, 30, { type:FlxTween.ONESHOT, complete:finishedGlasses } );
+			//_sTwn = FlxTween.multiVar(_img03, { y: FlxG.height - _img03.height } 10, { type:FlxTween.PINGPONG } );
+			_twn = FlxTween.multiVar(_glasses, { y: 85 }, 30, { type:FlxTween.ONESHOT, complete:finishedGlasses } );
 		
 			_whichScene = 9;
 		}
