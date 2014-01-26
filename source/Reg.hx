@@ -66,7 +66,7 @@ class Reg
 		{
 			
 			CurMusic = Music;
-			FlxG.sound.playMusic(CurMusic);
+			FlxG.sound.playMusic(CurMusic,.6);
 		}
 		
 	}

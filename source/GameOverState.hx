@@ -3,6 +3,7 @@ package ;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.system.FlxSound;
 import flixel.ui.FlxButton;
 
 /**
@@ -26,6 +27,7 @@ class GameOverState extends FlxState
 		add(new FlxSprite(0, 0, "assets/images/game_over.png"));
 		
 		_btnPlay = new FlxButton(0, 0, "Play Again", goPlay);
+		_btnPlay.onUp.sound = new FlxSound().loadEmbedded(SndAssets.SND_BUTTON,false);
 		_btnPlay.x = (FlxG.width / 2) - (_btnPlay.width / 2);
 		_btnPlay.y = FlxG.height - _btnPlay.height - 10;
 		add(_btnPlay);

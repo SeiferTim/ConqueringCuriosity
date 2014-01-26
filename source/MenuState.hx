@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.system.FlxSound;
 import flixel.system.resolution.FillResolutionPolicy;
 import flixel.system.resolution.FixedResolutionPolicy;
 import flixel.system.resolution.RatioResolutionPolicy;
@@ -48,9 +49,15 @@ class MenuState extends FlxState
 		_btnPlay.y = FlxG.height - _btnPlay.height - 10;
 		_btnOptions.y = FlxG.height - _btnOptions.height - 10;
 		
+		
+		
 		_btnCredits = new FlxButton(0, 0, "Credits", goCredits);
 		_btnCredits.x = FlxG.width - _btnCredits.width - 10;
 		_btnCredits.y = FlxG.height - _btnCredits.height - 10;
+		
+		_btnPlay.onUp.sound  = new FlxSound().loadEmbedded(SndAssets.SND_BUTTON,false);
+		_btnOptions.onUp.sound = new FlxSound().loadEmbedded(SndAssets.SND_BUTTON,false);
+		_btnCredits.onUp.sound = new FlxSound().loadEmbedded(SndAssets.SND_BUTTON,false);
 		
 		add(_btnPlay);
 		add(_btnOptions);

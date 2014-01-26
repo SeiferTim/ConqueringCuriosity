@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.system.FlxAssets;
+import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.ui.FlxSlider;
@@ -39,6 +40,7 @@ class OptionsState extends FlxState
 		add(new FlxSprite(0, 0, "assets/images/blur_image.png"));
 		
 		_btnDone = new FlxButton(0, 0, "Done", goDone);
+		_btnDone.onUp.sound = new FlxSound().loadEmbedded(SndAssets.SND_BUTTON,false);
 		_btnDone.x = (FlxG.width / 2)  + 10;
 		_btnDone.y = FlxG.height - _btnDone.height - 10;
 		add(_btnDone);

@@ -215,11 +215,13 @@ class PlayState extends FlxState
 		FlxSpriteUtil.screenCenter(_pauseText);
 		_pauseScreen.add(_pauseText);
 		_pauseQuit = new FlxButton(10, 0, "Quit", goQuit);
+		_pauseQuit.onUp.sound = new FlxSound().loadEmbedded(SndAssets.SND_BUTTON,false);
 		_pauseQuit.y = FlxG.height - _pauseQuit.height - 10;
 		_pauseScreen.add(_pauseQuit);
 		_pauseResume = new FlxButton(0, 0, "Resume", goResume);
 		_pauseResume.x = FlxG.width - _pauseResume.width - 10;
 		_pauseResume.y = FlxG.height - _pauseResume.height - 10;
+		_pauseResume.onUp.sound = new FlxSound().loadEmbedded(SndAssets.SND_BUTTON,false);
 		_pauseScreen.add(_pauseResume);
 		
 		_pauseText.scrollFactor.x = _pauseText.scrollFactor.y = _pauseQuit.scrollFactor.x = _pauseQuit.scrollFactor.y = _pauseResume.scrollFactor.x = _pauseResume.scrollFactor.y = 0;
@@ -631,6 +633,7 @@ class PlayState extends FlxState
 			
 				if (_mode == MODE_H)
 				{
+					FlxG.sound.play(SndAssets.SND_HIT, .2);
 					E.kill();
 					_meter.value += 10;
 					return true;
@@ -639,6 +642,7 @@ class PlayState extends FlxState
 				
 			case "Animal":
 				
+				FlxG.sound.play(SndAssets.SND_HIT, .2);
 				E.kill();
 				//trace(E.animalType);
 				
@@ -666,6 +670,7 @@ class PlayState extends FlxState
 				
 				if (_mode == MODE_H)
 				{
+					FlxG.sound.play(SndAssets.SND_HIT, .2);
 					E.kill();
 					_meter.value += 30;
 					return true;
