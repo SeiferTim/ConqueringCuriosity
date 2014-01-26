@@ -31,6 +31,7 @@ class MenuState extends FlxState
 	{
 		
 		FlxG.resolutionPolicy = new RatioResolutionPolicy();
+		Reg.PlayMusic(SndAssets.MUS_TITLE);
 		// Set a background color
 		FlxG.cameras.bgColor = 0xff131c1b;
 		// Show the mouse (in case it hasn't been disabled)

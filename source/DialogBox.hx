@@ -60,7 +60,7 @@ class DialogBox extends FlxGroup
 	
 	private function fadeInDone(T:FlxTween):Void
 	{
-		
+		FlxG.sound.play(SndAssets.SND_DIALOG1, .2);
 	}
 	
 	override public function update():Void
@@ -82,6 +82,7 @@ class DialogBox extends FlxGroup
 	
 	private function fadeOutDone(T:FlxTween):Void
 	{
+		FlxG.sound.play(SndAssets.SND_DIALOG2, .2);
 		Reg.DiagShown = false;
 		Reg.CurDiag = null;
 		kill();

@@ -16,6 +16,7 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
+import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxEase;
@@ -91,12 +92,20 @@ class PlayState extends FlxState
 	private var _goToEndGame:Bool = false;
 	private var _leaving:Bool = false;
 	
+	private var _sndWarn:FlxSound;
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
 	override public function create():Void
 	{
+		
 		Reg.playState = this;
+		
+		Reg.PlayMusic(SndAssets.MUS_PLAY);
+		_sndWarn = new FlxSound();
+		_sndWarn.loadEmbedded(SndAssets.SND_WARN, true);
+		_sndWarn.volume = .4;
 		// Set a background color
 		FlxG.cameras.bgColor = 0xff131c1b;
 		// Show the mouse (in case it hasn't been disabled)
@@ -115,6 +124,7 @@ class PlayState extends FlxState
 		_tmForeground = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Foregrounds");
 		add(_tmBackground2);
 		add(_tmBackground);
+		
 		
 		_level.loadEntities(loadObject, "Objects");
 		add(_grpObjects);
@@ -451,15 +461,12 @@ class PlayState extends FlxState
 				if (_mode == MODE_J)
 				{
 					switchToH();
-					
-					
 				}
 				else if (_mode == MODE_H)
 				{
-					
 					switchToJ();
-					
 				}
+				FlxG.sound.play(SndAssets.SND_TRANSFORM,.2);
 			}
 			else
 			{
@@ -570,7 +577,14 @@ class PlayState extends FlxState
 			{
 				_meter.value += FlxG.elapsed*7;
 			}
-			
+			if (_meter.value > 90)
+			{
+				_sndWarn.play();
+			}
+			else
+			{
+				_sndWarn.stop();
+			}
 			if ( _meter.value >= 100)
 			{
 				_gameOvering = true;
@@ -690,6 +704,7 @@ class PlayState extends FlxState
 						_goToEndGame = true;
 						
 				}
+				FlxG.sound.play(SndAssets.SND_PICKUP);
 				E.kill();
 		}
 		

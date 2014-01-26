@@ -27,6 +27,7 @@ class EndSceneState extends FlxState
 	override public function create():Void
 	{
 		
+		Reg.PlayMusic(SndAssets.MUS_END);
 		// Set a background color
 		FlxG.cameras.bgColor = 0xff131c1b;
 		// Show the mouse (in case it hasn't been disabled)
