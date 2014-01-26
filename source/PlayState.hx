@@ -42,6 +42,7 @@ class PlayState extends FlxState
 	
 	private var _level:FlxOgmoLoader;
 	private var _tmBackground:FlxTilemap;
+	private var _tmBackground2:FlxTilemap;
 	private var _tmWalls:FlxTilemap;
 	private var _grpObjects:FlxGroup;
 	private var _tmForeground:FlxTilemap;
@@ -71,8 +72,9 @@ class PlayState extends FlxState
 	
 	private var _offsetX:Float = 0;
 	private var _offsetY:Float = 0;
+	private var _gameOvering:Bool = false;
 	
-	
+	private var _shownFirstDiag:Bool = false;
 	
 	
 	
@@ -89,32 +91,41 @@ class PlayState extends FlxState
 		FlxG.mouse.visible = false;
 		#end
 		
+		Reg.levelX = 2;
+		Reg.levelY = 2;
+		
 		_level = new FlxOgmoLoader(Reg.levels[Reg.levelY][Reg.levelX]);
 		_grpObjects = new FlxGroup();
 		_tmBackground = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Backgrounds");
+		_tmBackground2 = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Backgrounds2");
 		_tmWalls = _level.loadTilemap("assets/images/walls.png", 16, 16, "Walls");
 		_tmForeground = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Foregrounds");
+		add(_tmBackground2);
 		add(_tmBackground);
+		
 		_grpObjects = new FlxGroup();
 		add(_grpObjects);
-		add(_tmWalls);
+		//add(_tmWalls);
 		
-		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
-		_grpObjects.add(new Folk(FlxRandom.intRanged(10, Std.int(FlxG.width - 10)), FlxRandom.intRanged(10, Std.int(FlxG.height - 10))));
+		
 		
 		_grpPlayer = new FlxGroup();
 		
-		_jeckyl = cast new FlxSprite(0, 0).makeGraphic(16, 16, 0xff0000ff);
-		_hyde = cast new FlxSprite(0, 0).makeGraphic(32, 32, 0xffff0000);
+		_jeckyl = new FlxSprite(0, 0).loadGraphic("assets/images/dr Jayfinal.png", true, true, 24, 24); //.makeGraphic(16, 16, 0xff0000ff);
+		_jeckyl.animation.add("walk-down", [0, 1, 2, 1], 6, true);
+		_jeckyl.animation.add("idle-down", [1], 6, false);
+		_jeckyl.animation.add("walk-up", [3,4,5,4], 6, true);
+		_jeckyl.animation.add("idle-up", [4], 6, false);
+		_jeckyl.animation.add("walk-side", [6,7,8,7], 6, true);
+		_jeckyl.animation.add("idle-side", [7], 6, false);
+		_jeckyl.facing = FlxObject.DOWN;
+		_jeckyl.animation.play("idle-down");
+		_jeckyl.width = 12;
+		_jeckyl.offset.x = 6;
+		_jeckyl.height = 14;
+		_jeckyl.offset.y = 8;
+		
+		_hyde = new FlxSprite(0, 0).makeGraphic(32, 32, 0xffff0000);
 		_currentSpr = _jeckyl;
 		
 		_burst = new FlxEmitterExt();
@@ -166,15 +177,18 @@ class PlayState extends FlxState
 	{
 		
 		_tmBackground.kill();
+		_tmBackground2.kill();
 		_tmForeground.kill();
 		_tmWalls.kill();
 		_tmBackground.destroy();
+		_tmBackground2.destroy();
 		_tmForeground.destroy();
 		_tmWalls.destroy();
 		
 		_level = new FlxOgmoLoader(Reg.levels[Reg.levelY][Reg.levelX]);
 		
 		var _tmpBackground:FlxTilemap = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Backgrounds"); 
+		var _tmpBackground2:FlxTilemap = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Backgrounds2"); 
 		var _tmpWalls:FlxTilemap = _level.loadTilemap("assets/images/walls.png", 16, 16, "Walls");
 		var _tmpForeground:FlxTilemap = _level.loadTilemap("assets/images/tilemap-1.png", 16, 16, "Foregrounds");
 		
@@ -185,6 +199,7 @@ class PlayState extends FlxState
 		}
 		
 		replace(_tmBackground, _tmpBackground);
+		replace(_tmBackground2, _tmpBackground2);
 		replace(_tmWalls, _tmpWalls);
 		_level.loadEntities(loadObject, "Objects");
 		replace(_tmForeground , _tmpForeground);
@@ -192,6 +207,7 @@ class PlayState extends FlxState
 		
 		
 		_tmBackground  = _tmpBackground;
+		_tmBackground2  = _tmpBackground2;
 		_tmWalls = _tmpWalls;
 		_tmForeground = _tmpForeground;
 		
@@ -213,6 +229,25 @@ class PlayState extends FlxState
 	private function loadObject(ObjName:String, ObjXML:Xml):Void
 	{
 		// use offsetX and offsetY!!!!
+		trace(ObjXML);
+		switch (ObjName)
+		{
+			case "villager":
+				_grpObjects.add(new Folk(Std.parseFloat(ObjXML.get("x")), Std.parseFloat(ObjXML.get("y"))));
+				
+			case "animal":
+				_grpObjects.add(new Animal(Std.parseFloat(ObjXML.get("x")), Std.parseFloat(ObjXML.get("y")), ObjXML.get("type")));
+				
+			case "police":
+				_grpObjects.add(new Policeman(Std.parseFloat(ObjXML.get("x")), Std.parseFloat(ObjXML.get("y"))));
+				
+			case "clue":
+				_grpObjects.add(new Clue(Std.parseFloat(ObjXML.get("x")), Std.parseFloat(ObjXML.get("y"))));
+				
+			case "obstical":
+				
+				
+		}
 	}
 	
 	private function finishLoad():Void
@@ -235,9 +270,22 @@ class PlayState extends FlxState
 	override public function update():Void
 	{
 		
-		if (_loading || _changingRoom)
+		
+		
+		if (_loading || _changingRoom || _gameOvering)
 		{
 			super.update();
+			return;
+		}
+		
+		if (!_shownFirstDiag)
+		{
+			_shownFirstDiag = true;
+			add(new DialogBox("This is some kind of test or something..."));
+		}
+		if (Reg.DiagShown)
+		{
+			Reg.CurDiag.update();
 			return;
 		}
 		
@@ -264,27 +312,50 @@ class PlayState extends FlxState
 			}
 			else
 			{
-				if (FlxG.keys.anyPressed(["UP"]))
+				if (FlxG.keys.anyPressed(["W", "UP"]))
 				{
 					_currentSpr.velocity.y = -(_mode == MODE_J ? SPEED_J : SPEED_H);
+					_jeckyl.animation.play("walk-up");
+					_jeckyl.facing = FlxObject.UP;
 				}
-				else if (FlxG.keys.anyPressed(["DOWN"]))
+				else if (FlxG.keys.anyPressed(["S", "DOWN"]))
 				{
 					_currentSpr.velocity.y = (_mode == MODE_J ? SPEED_J : SPEED_H);
+					_jeckyl.animation.play("walk-down");
+					_jeckyl.facing = FlxObject.DOWN;
 				}
 				else
+				{
 					_currentSpr.velocity.y = 0;
+					if (_jeckyl.facing == FlxObject.UP)
+					{
+						_jeckyl.animation.play("idle-up");
+					}
+					else if (_jeckyl.facing == FlxObject.DOWN)
+					{
+						_jeckyl.animation.play("idle-down");
+					}
+					
+				}
 				
-				if (FlxG.keys.anyPressed(["LEFT"]))
+				if (FlxG.keys.anyPressed(["A","LEFT"]))
 				{
 					_currentSpr.velocity.x = -(_mode == MODE_J ? SPEED_J : SPEED_H);
+					_jeckyl.facing = FlxObject.LEFT;
+					_jeckyl.animation.play("walk-side");
 				}
-				else if (FlxG.keys.anyPressed(["RIGHT"]))
+				else if (FlxG.keys.anyPressed(["D","RIGHT"]))
 				{
 					_currentSpr.velocity.x = (_mode == MODE_J ? SPEED_J : SPEED_H);
+					_jeckyl.facing = FlxObject.RIGHT;
+					_jeckyl.animation.play("walk-side");
 				}
 				else
+				{
 					_currentSpr.velocity.x = 0;
+					if (_jeckyl.facing == FlxObject.LEFT || _jeckyl.facing == FlxObject.RIGHT)
+						_jeckyl.animation.play("idle-side");
+				}
 			}
 
 			if (_currentSpr.x <= FlxG.worldBounds.left && !_changingRoom) 
@@ -324,12 +395,20 @@ class PlayState extends FlxState
 			
 			if (_mode == MODE_J)
 			{
-				_meter.value -= FlxG.elapsed;
+				_meter.value -= FlxG.elapsed*.25;
 			}
 			else if (_mode == MODE_H)
 			{
-				_meter.value += FlxG.elapsed;
+				_meter.value += FlxG.elapsed*7;
 			}
+			
+			if ( _meter.value >= 100)
+			{
+				_gameOvering = true;
+				FlxG.camera.fade(0xff000000, .2, false, goGameOver);
+			}
+			
+			
 		}
 		
 		super.update();
@@ -338,18 +417,79 @@ class PlayState extends FlxState
 		FlxG.collide(_grpObjects, _tmWalls);
 		
 		if (!_transforming)
+		{
 			FlxG.collide(_currentSpr, _tmWalls, playerHitsWall);
+			FlxG.overlap(_currentSpr, _grpObjects, null,playerHitsEntity);
+		}
 		else
 		{
 			FlxG.collide(_jeckyl, _tmWalls, playerHitsWall);
 			FlxG.collide(_hyde, _tmWalls, playerHitsWall);
 		}
-		
-		
-		
-		
-		
 	}	
+	
+	private function playerHitsEntity(P:Dynamic, E:Dynamic):Bool
+	{
+		switch (Type.getClassName(Type.getClass(E)))
+		{
+			case "Folk":
+			
+				if (_mode == MODE_H)
+				{
+					E.kill();
+					_meter.value += 10;
+					return true;
+				}
+				return false;
+				
+			case "Animal":
+				
+				E.kill();
+				//trace(E.animalType);
+				
+				switch (cast(E, Animal).animalType)
+				{
+					case "dog":
+						if (_mode == MODE_H)
+							_meter.value += 5;
+						else
+							_meter.value += 10;
+					case "squ":
+						if (_mode == MODE_H)
+							_meter.value += 2;
+						else
+							_meter.value += 6;
+					case "cow":
+						if (_mode == MODE_H)
+							_meter.value += 10;
+						else
+							_meter.value += 20;
+					
+				}
+				return true;
+			case "Policeman":
+				
+				if (_mode == MODE_H)
+				{
+					E.kill();
+					_meter.value += 30;
+					return true;
+				}
+				return false;
+			case "Obstical":
+				
+			case "Clue":
+				Reg.CollectedClues += E._whichClue;
+				E.kill();
+		}
+		
+		return false;
+	}
+	
+	private function goGameOver():Void
+	{
+		FlxG.switchState(new GameOverState());
+	}
 	
 	private function switchToH():Void
 	{
@@ -417,7 +557,7 @@ class PlayState extends FlxState
 	
 	private function playerHitsWall(Spr:Dynamic, Walls:Dynamic):Void
 	{
-		trace('!!');
+		//trace('!!');
 		//var m:FlxPoint = _currentSpr.getMidpoint();
 		//_playerPos.x = m.x;
 		//_playerPos.y = m.y;

@@ -46,6 +46,17 @@ class Reg
 	static public var levelX:Int = 0;
 	static public var levelY:Int = 0;
 	
+	static public var DiagShown:Bool = false;
+	static public var CurDiag:DialogBox;
+	
+	static public var CLUE_0:Int = 0x0001;
+	static public var CLUE_1:Int = 0x0010;
+	static public var CLUE_2:Int = 0x0100;
+	static public var CLUE_3:Int = 0x1000;
+	
+	static public var CollectedClues = 0x0000;
+	
+	
 	static public function initGame():Void
 	{
 		if (GameInitialized) return;
