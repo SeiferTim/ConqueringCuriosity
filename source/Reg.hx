@@ -56,13 +56,27 @@ class Reg
 	
 	static public var CollectedClues = 0x0000;
 	
+	static private var CurMusic:String = "";
+	
+	
+	static public function PlayMusic(Music:String):Void	
+	{
+		//trace(CurMusic + " " + Music);
+		if (CurMusic != Music)
+		{
+			
+			CurMusic = Music;
+			FlxG.sound.playMusic(CurMusic);
+		}
+		
+	}
 	
 	static public function initGame():Void
 	{
 		if (GameInitialized) return;
 		saves[0] = new FlxSave();
 		saves[0].bind("flixel");
-		trace('init');
+		//trace('init');
 		if (saves[0].data.volume != null)
 		{
 			FlxG.sound.volume = saves[0].data.volume;

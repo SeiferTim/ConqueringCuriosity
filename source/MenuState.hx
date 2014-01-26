@@ -11,6 +11,7 @@ import flixel.system.resolution.StageSizeResolutionPolicy;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
+import flixel.util.FlxSpriteUtil;
 
 /**
  * A FlxState which can be used for the game's menu.
@@ -22,6 +23,7 @@ class MenuState extends FlxState
 	private var _btnOptions:FlxButton;
 	private var _leaving:Bool = false;
 	private var _loading:Bool = true;
+	private var _btnCredits:FlxButton;
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -40,17 +42,37 @@ class MenuState extends FlxState
 		
 		_btnPlay = new FlxButton(0,0, "Play", goPlay);
 		_btnOptions = new FlxButton(0, 0, "Options", goOptions);
-		_btnPlay.x = (FlxG.width / 2)  - _btnPlay.width - 10;
-		_btnOptions.x = (FlxG.width / 2) + 10;
+		_btnPlay.x = 10;
+		FlxSpriteUtil.screenCenter(_btnOptions, true, false);
 		_btnPlay.y = FlxG.height - _btnPlay.height - 10;
 		_btnOptions.y = FlxG.height - _btnOptions.height - 10;
 		
+		_btnCredits = new FlxButton(0, 0, "Credits", goCredits);
+		_btnCredits.x = FlxG.width - _btnCredits.width - 10;
+		_btnCredits.y = FlxG.height - _btnCredits.height - 10;
+		
 		add(_btnPlay);
 		add(_btnOptions);
+		add(_btnCredits);
 		
 		FlxG.camera.fade(0xff000000, .33, true, finishLoading);
 		
+		//Reg.PlayMusic("music/Depressing as Hell.ogg");
+		
 		super.create();
+	}
+	
+	private function goCredits():Void
+	{
+		if (_loading || _leaving)
+			return;
+		_leaving = true;
+		FlxG.camera.fade(0xff000000, .33, false, finishGoCredits, false);
+	}
+	
+	private function finishGoCredits():Void
+	{
+		FlxG.switchState(new CreditState());
 	}
 	
 	private function finishLoading():Void

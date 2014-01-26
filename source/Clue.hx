@@ -27,11 +27,23 @@ class Clue extends FlxSprite
 			case 3:
 				_whichClue = 0x1000;
 				loadGraphic("assets/images/key.png", true);
+				visible = false;
 		}
 		animation.add("clue", [0, 1], 6, true);
 		animation.play("clue");
 		
 		
+	}
+	
+	override public function update():Void 
+	{
+		if (_whichClue == 3)
+		{
+			if (Reg.CollectedClues == 0x0111)
+				visible = true;
+		}
+		
+		super.update();
 	}
 	
 	function get_whichClue():Int 

@@ -29,6 +29,7 @@ class Folk extends FlxSprite
 		
 		var sprs:Array<String> = [];
 		sprs.push("assets/images/vill girl1.png");
+		sprs.push("assets/images/girl 2.png");
 		
 		loadGraphic(FlxRandom.getObject(sprs), true, true, 24, 24);
 		animation.add("walk-down", [0, 1, 2, 1], 6, true);

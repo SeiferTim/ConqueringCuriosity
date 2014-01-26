@@ -4,6 +4,7 @@ import flash.display.BlendMode;
 import flash.Lib;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.editors.ogmo.FlxOgmoLoader;
+import flixel.addons.text.FlxBitmapFont;
 import flixel.animation.FlxBaseAnimation;
 import flixel.effects.FlxFlicker;
 import flixel.effects.particles.FlxEmitterExt;
@@ -21,6 +22,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
 import flixel.ui.FlxButton;
+import flixel.util.FlxCollision;
 import flixel.util.FlxMath;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRandom;
@@ -75,8 +77,16 @@ class PlayState extends FlxState
 	private var _gameOvering:Bool = false;
 	
 	private var _shownFirstDiag:Bool = false;
+	private var _shownSecondDiag:Bool = false;
+	private var readyForDiagFour:Bool = false;
+	private var readyForDiagFive:Bool = false;
+	private var readyForDiagSix:Bool = false;
 	
-	
+	private var _pauseScreen:FlxGroup;
+	private var _pauseText:FlxBitmapFont;
+	private var _pauseQuit:FlxButton;
+	private var _pauseResume:FlxButton;
+	private var _diagGroup:FlxGroup;
 	
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -103,7 +113,7 @@ class PlayState extends FlxState
 		add(_tmBackground2);
 		add(_tmBackground);
 		
-		_grpObjects = new FlxGroup();
+		_level.loadEntities(loadObject, "Objects");
 		add(_grpObjects);
 		//add(_tmWalls);
 		
@@ -151,8 +161,8 @@ class PlayState extends FlxState
 		_burst.makeParticles("assets/images/particles.png", 100, 0, true, 0);
 		//_burst.blend = BlendMode.SCREEN;
 		
-		_jeckyl.x = 100;
-		_jeckyl.y = 100;
+		_jeckyl.x = 16 * 45;
+		_jeckyl.y = 16 * 29;
 
 		_hyde.x = _jeckyl.x + (_jeckyl.width / 2) - (_hyde.width / 2);
 		_hyde.y = _jeckyl.y + (_jeckyl.height / 2) - (_hyde.height / 2);
@@ -177,8 +187,51 @@ class PlayState extends FlxState
 		
 				
 		FlxG.camera.fade(0xff000000, .33, true, finishLoad);
+		_diagGroup = new FlxGroup();
+		add(_diagGroup);
+		_pauseScreen = new FlxGroup();
+		add(_pauseScreen);
+	
+		var tmpBack:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, 0x66000000);
+		tmpBack.scrollFactor.x = tmpBack.scrollFactor.y = 0;
+		_pauseScreen.add(tmpBack);
+		_pauseText  = new FlxBitmapFont("assets/images/font.png", 8, 8, FlxBitmapFont.TEXT_SET1, 16);
+		_pauseText.setText("* PAUSED * ", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, false);
+		
+		FlxSpriteUtil.screenCenter(_pauseText);
+		_pauseScreen.add(_pauseText);
+		_pauseQuit = new FlxButton(10, 0, "Quit", goQuit);
+		_pauseQuit.y = FlxG.height - _pauseQuit.height - 10;
+		_pauseScreen.add(_pauseQuit);
+		_pauseResume = new FlxButton(0, 0, "Resume", goResume);
+		_pauseResume.x = FlxG.width - _pauseResume.width - 10;
+		_pauseResume.y = FlxG.height - _pauseResume.height - 10;
+		_pauseScreen.add(_pauseResume);
+		
+		_pauseText.scrollFactor.x = _pauseText.scrollFactor.y = _pauseQuit.scrollFactor.x = _pauseQuit.scrollFactor.y = _pauseResume.scrollFactor.x = _pauseResume.scrollFactor.y = 0;
+		
+		_pauseScreen.active = false;
+		_pauseScreen.visible = false;
+		
+		
 		
 		super.create();
+	}
+	
+	private function goQuit():Void
+	{
+		FlxG.camera.fade(0xff000000, .2, false, goQuitDone);
+	}
+
+	private function goQuitDone():Void
+	{
+		FlxG.switchState(new MenuState());
+	}
+	
+	private function goResume():Void
+	{
+		_pauseScreen.active = false;
+		_pauseScreen.visible = false;
 	}
 	
 	private function changeRoomsStart():Void
@@ -246,7 +299,7 @@ class PlayState extends FlxState
 	private function loadObject(ObjName:String, ObjXML:Xml):Void
 	{
 		// use offsetX and offsetY!!!!
-		trace(ObjXML);
+		//trace(ObjXML);
 		switch (ObjName)
 		{
 			case "villager":
@@ -261,8 +314,8 @@ class PlayState extends FlxState
 			case "clue":
 				_grpObjects.add(new Clue(Std.parseFloat(ObjXML.get("x")), Std.parseFloat(ObjXML.get("y")), Std.parseInt(ObjXML.get("Numb"))));
 				
-			case "obstical":
-				
+			//case "obstical":
+			//	_grpObjects.add(new Obstical(Std.parseFloat(ObjXML.get("x")), Std.parseFloat(ObjXML.get("y")), ObjXML.get("type")));
 				
 		}
 	}
@@ -295,16 +348,71 @@ class PlayState extends FlxState
 			return;
 		}
 		
+		if (FlxG.keys.anyJustReleased(["P"]))
+		{
+			if (_pauseScreen.visible)
+			{
+				#if !FLX_NO_MOUSE
+				FlxG.mouse.visible = false;
+				#end
+				_pauseScreen.active = false;
+				_pauseScreen.visible = false;				
+			}
+			else
+			{
+				#if !FLX_NO_MOUSE
+				FlxG.mouse.visible = true;
+				#end
+				_pauseScreen.active = true;
+				_pauseScreen.visible = true;
+			}
+		}
+		
+		if (_pauseScreen.visible)
+		{
+			_pauseScreen.update();
+			return;
+		}
+		
 		if (!_shownFirstDiag)
 		{
 			_shownFirstDiag = true;
-			add(new DialogBox("This is some kind of test or something..."));
+			_diagGroup.add(new DialogBox("What's this!? My Lab has been broken\ninto...! Ransacked!\n\n...and my secret formula is missing!"));
 		}
+		else if (_shownFirstDiag && !_shownSecondDiag && !Reg.DiagShown)
+		{
+			_shownSecondDiag = true;
+			_diagGroup.add(new DialogBox("Perhaps the culprit left a clue\nsomewhere nearby...\n\nI must get to the bottom of this...\n                         ...and fast!"));
+		}
+		
+		if (readyForDiagFour && !Reg.DiagShown)
+		{
+			readyForDiagFour = false;
+			_diagGroup.add(new DialogBox("Look! Animals and vermin have been\ndoused with my serum!\n\nAs loathe as I am to enlist\nHIS help..."));
+			readyForDiagFive = true;
+		}
+		
+		if (readyForDiagFive && !Reg.DiagShown)
+		{
+			readyForDiagFive = false;
+			_diagGroup.add(new DialogBox("...I'm afraid I need to bring out\nHyde to catch this rogue!\n\nI must take care to avoid losing\nmyself to him forever..."));
+			readyForDiagSix = true;
+		}
+		
+		
+		if (readyForDiagSix && !Reg.DiagShown)
+		{
+			readyForDiagSix = false;
+			_diagGroup.add(new DialogBox("[Use X to Switch between\nJekyll & Hyde\n\n Watch your ID Meter:\nkeep it out of the red!]"));
+		}
+
 		if (Reg.DiagShown)
 		{
 			Reg.CurDiag.update();
 			return;
 		}
+		
+		
 		
 		if (_transforming)
 		{
@@ -474,10 +582,6 @@ class PlayState extends FlxState
 		
 	}	
 	
-	private function PlayerOverlapsMeter(S:Dynamic, M:Dynamic):Void
-	{
-		
-	}
 	
 	private function playerHitsEntity(P:Dynamic, E:Dynamic):Bool
 	{
@@ -527,10 +631,38 @@ class PlayState extends FlxState
 					return true;
 				}
 				return false;
-			case "Obstical":
+			/*case "Obstical":
 				
+				if (cast(E, Obstical).obsticalType == "door")
+				{
+					if (_mode == MODE_J)
+						cast(E, Obstical).open = true;
+					else
+						FlxObject.separate(E, _currentSpr);
+				}
+				else if (cast(E, Obstical).obsticalType == "tree")
+				{
+					if (_mode == MODE_H)
+						cast(E, Obstical).open = true;
+					else
+						FlxObject.separate(E, _currentSpr);
+				}
+				*/
 			case "Clue":
-				Reg.CollectedClues += E._whichClue;
+				Reg.CollectedClues += cast(E, Clue).whichClue;
+				switch (cast(E, Clue).whichClue)
+				{
+					case Reg.CLUE_0:
+						_diagGroup.add(new DialogBox("This is an empty flask of my secret\nformula, alright...\n\nThe fiend has spread it all over\ntown!"));
+						readyForDiagFour = true;
+					case Reg.CLUE_1:
+						_diagGroup.add(new DialogBox("These are some of the notes from my\nlab about my serum!\n\nThis intruder surely knows what\nit is he's stolen..."));
+					case Reg.CLUE_2:
+						_diagGroup.add(new DialogBox("Hm, very large, human footprints...\n\nThese look familiar somehow..."));
+					case Reg.CLUE_3:
+						_diagGroup.add(new DialogBox("An old, key... I wonder if it goes to\nthis house?"));
+						
+				}
 				E.kill();
 		}
 		

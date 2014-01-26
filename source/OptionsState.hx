@@ -1,11 +1,14 @@
 package ;
 
+import flixel.addons.text.FlxBitmapFont;
 import flixel.FlxG;
+import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.system.FlxAssets;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.ui.FlxSlider;
+import flixel.util.FlxSpriteUtil;
 
 /**
  * ...
@@ -18,10 +21,10 @@ class OptionsState extends FlxState
 	private var _loading:Bool = true;
 	private var _leaving:Bool = false;
 	
-	private var _txtHeading:FlxText;
+	private var _txtHeading:FlxBitmapFont;
 	
 	private var _optVolume:CustomSlider;
-	private var _txtVolume:FlxText;
+	private var _txtVolume:FlxBitmapFont;
 	
 	override public function create():Void
 	{
@@ -33,20 +36,32 @@ class OptionsState extends FlxState
 		FlxG.mouse.visible = true;
 		#end
 		
+		add(new FlxSprite(0, 0, "assets/images/blur_image.png"));
+		
 		_btnDone = new FlxButton(0, 0, "Done", goDone);
 		_btnDone.x = (FlxG.width / 2)  + 10;
 		_btnDone.y = FlxG.height - _btnDone.height - 10;
 		add(_btnDone);
 		
-		_txtHeading = new FlxText(0, 10, FlxG.width, "Options", 12);
-		_txtHeading.setFormat(null, 12, 0xffffff, "center");
+		//_txtHeading = new FlxText(0, 10, FlxG.width, "Options", 12);
+		//_txtHeading.setFormat(null, 12, 0xffffff, "center");
+		
+		_txtHeading = new FlxBitmapFont("assets/images/font.png", 8, 8, FlxBitmapFont.TEXT_SET1, 16);
+		_txtHeading.setText("Options", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
+		_txtHeading.x = 0;
+		_txtHeading.y = 10;
+		FlxSpriteUtil.screenCenter(_txtHeading, true, false);
 		add(_txtHeading);
 		
-		_txtVolume = new FlxText(10, _txtHeading.y + _txtHeading.height + 10, 60, "Volume:", 10);
-		_txtVolume.setFormat(null, 10, 0xffffff, "right");
+	//	_txtVolume = new FlxText(10, _txtHeading.y + _txtHeading.height + 10, 60, "Volume:", 10);
+//		_txtVolume.setFormat(null, 10, 0xffffff, "right");
+		_txtVolume = new FlxBitmapFont("assets/images/font.png", 8, 8, FlxBitmapFont.TEXT_SET1, 16);
+		_txtVolume.setText("Volume", false, 0, 0, FlxBitmapFont.ALIGN_RIGHT, true);
+		_txtVolume.x = 10;
+		_txtVolume.y = _txtHeading.y + _txtHeading.height + 20;
 		add(_txtVolume);
 		
-		_optVolume = new CustomSlider(_txtVolume.x + _txtVolume.width + 10, _txtVolume.y, Std.int(FlxG.width - 30 - _txtVolume.width), 16, 8, 16, 0, 1, onVolClick, 0xff666666, 0xffffffff);
+		_optVolume = new CustomSlider(_txtVolume.x + _txtVolume.width + 10, _txtVolume.y-4, Std.int(FlxG.width - 30 - _txtVolume.width), 16, 8, 16, 0, 1, onVolClick, 0xff666666, 0xffffffff);
 		_optVolume.decimals = 1;
 		_optVolume.value = FlxG.sound.volume;
 		

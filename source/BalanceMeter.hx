@@ -15,7 +15,7 @@ import flixel.util.FlxSpriteUtil;
 class BalanceMeter extends FlxGroup
 {
 
-	private var _border:FlxSprite;
+	//private var _border:FlxSprite;
 	private var _back:FlxSprite;
 	private var _indicator:FlxSprite;
 	private var _value:Float;
@@ -27,22 +27,25 @@ class BalanceMeter extends FlxGroup
 	public function new() 
 	{
 		super(0);
-		
+		/*
 		_border = FlxGradient.createGradientFlxSprite(60, 6, [0xffE2E2E2, 0xffdbdbdb, 0xffd1d1d1, 0xfffefefe]);
 		FlxSpriteUtil.screenCenter(_border, true, false);
 		_border.y = 16;
 		_border.x = 16;
 		_border.scrollFactor.x = _border.scrollFactor.y = 0;
-		add(_border);
+		add(_border);*/
 		
-		_back = FlxGradient.createGradientFlxSprite(Std.int(_border.width - 2), Std.int(_border.height - 2), [0xffff0000,  0xffffffff, 0xff0000ff],1,180);
-		_back.x = _border.x + 1;
-		_back.y = _border.y +1;
+		_back = new FlxSprite(0, 0).loadGraphic("assets/images/meter.png", true,false,64,8 );
+		_back.animation.add("meter", [0, 1], 6, true);
+		_back.animation.play("meter");
+		//FlxGradient.createGradientFlxSprite(Std.int(_border.width - 2), Std.int(_border.height - 2), [0xffff0000,  0xffffffff, 0xff0000ff],1,180);
+		_back.x = 16;
+		_back.y = 16;
 		_back.scrollFactor.x = _back.scrollFactor.y = 0;
 		add(_back);
 		
-		_indicator = new FlxSprite(0, 3).makeGraphic(3, Std.int(_border.height + 2), 0xff000000);
-		_indicator.y = _border.y -1;
+		_indicator = new FlxSprite(0, 3).makeGraphic(3, Std.int(_back.height + 2), 0xff000000);
+		_indicator.y = _back.y -1;
 		_indicator.scrollFactor.x = _indicator.scrollFactor.y = 0;
 		add(_indicator);
 		
@@ -95,7 +98,7 @@ class BalanceMeter extends FlxGroup
 	
 	override public function update():Void 
 	{
-		_border.alpha = _back.alpha = _indicator.alpha = _alpha;
+		_back.alpha = _indicator.alpha = _alpha;
 		
 		super.update();
 	}
