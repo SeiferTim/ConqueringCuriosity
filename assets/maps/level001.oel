@@ -165,20 +165,11 @@
     <animal id="27" x="624" y="544" type="cow" />
     <animal id="28" x="832" y="656" type="cow" />
     <animal id="29" x="848" y="576" type="cow" />
-    <clue id="30" x="816" y="160" Numb="3" />
+    <clue id="30" x="144" y="208" Numb="3" />
     <animal id="31" x="784" y="272" type="cow" />
     <animal id="32" x="864" y="176" type="cow" />
     <animal id="33" x="752" y="192" type="cow" />
     <animal id="34" x="704" y="288" type="cow" />
-    <obstical id="35" x="144" y="208" type="door" />
-    <obstical id="36" x="800" y="160" type="tree" />
-    <obstical id="37" x="800" y="144" type="tree" />
-    <obstical id="38" x="816" y="144" type="tree" />
-    <obstical id="39" x="832" y="144" type="tree" />
-    <obstical id="40" x="832" y="160" type="tree" />
-    <obstical id="41" x="832" y="176" type="tree" />
-    <obstical id="42" x="816" y="176" type="tree" />
-    <obstical id="43" x="800" y="176" type="door" />
     <obstical id="44" x="640" y="304" type="door" />
     <obstical id="45" x="640" y="320" type="door" />
     <obstical id="46" x="640" y="336" type="door" />
