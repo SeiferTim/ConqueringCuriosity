@@ -36,6 +36,8 @@ class MenuState extends FlxState
 		FlxG.mouse.visible = true;
 		#end
 		
+		add(new FlxSprite(0, 0, "assets/images/start_screen_logo.png"));
+		
 		_btnPlay = new FlxButton(0,0, "Play", goPlay);
 		_btnOptions = new FlxButton(0, 0, "Options", goOptions);
 		_btnPlay.x = (FlxG.width / 2)  - _btnPlay.width - 10;

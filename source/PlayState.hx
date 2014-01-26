@@ -111,7 +111,7 @@ class PlayState extends FlxState
 		
 		_grpPlayer = new FlxGroup();
 		
-		_jeckyl = new FlxSprite(0, 0).loadGraphic("assets/images/dr Jayfinal.png", true, true, 24, 24); //.makeGraphic(16, 16, 0xff0000ff);
+		_jeckyl = new FlxSprite(0, 0).loadGraphic("assets/images/dr Jayfinal.png", true, true); //.makeGraphic(16, 16, 0xff0000ff);
 		_jeckyl.animation.add("walk-down", [0, 1, 2, 1], 6, true);
 		_jeckyl.animation.add("idle-down", [1], 6, false);
 		_jeckyl.animation.add("walk-up", [3,4,5,4], 6, true);
@@ -125,7 +125,24 @@ class PlayState extends FlxState
 		_jeckyl.height = 14;
 		_jeckyl.offset.y = 8;
 		
-		_hyde = new FlxSprite(0, 0).makeGraphic(32, 32, 0xffff0000);
+		_hyde = new FlxSprite(0, 0).loadGraphic("assets/images/hyde.png", true, false); //.makeGraphic(32, 32, 0xffff0000);
+		_hyde.animation.add("walk-down", [0, 1, 0, 2], 6, true);
+		_hyde.animation.add("idle-down", [0]);
+		_hyde.animation.add("walk-up", [3, 4, 3, 5], 6, true);
+		_hyde.animation.add("idle-up", [3]);
+		_hyde.animation.add("walk-right", [6, 7, 6, 8], 6, true);
+		_hyde.animation.add("idle-right", [6]);
+		_hyde.animation.add("walk-left", [9, 10, 9, 11], 6, true);
+		_hyde.animation.add("idle-left", [9]);
+		_hyde.facing = FlxObject.DOWN;
+		_hyde.animation.play("idle-down");
+		_hyde.width = 28;
+		_hyde.height = 28;
+		_hyde.offset.x = 2;
+		_hyde.offset.y = 2;
+		
+		
+		
 		_currentSpr = _jeckyl;
 		
 		_burst = new FlxEmitterExt();
@@ -242,7 +259,7 @@ class PlayState extends FlxState
 				_grpObjects.add(new Policeman(Std.parseFloat(ObjXML.get("x")), Std.parseFloat(ObjXML.get("y"))));
 				
 			case "clue":
-				_grpObjects.add(new Clue(Std.parseFloat(ObjXML.get("x")), Std.parseFloat(ObjXML.get("y"))));
+				_grpObjects.add(new Clue(Std.parseFloat(ObjXML.get("x")), Std.parseFloat(ObjXML.get("y")), Std.parseInt(ObjXML.get("Numb"))));
 				
 			case "obstical":
 				
@@ -316,13 +333,15 @@ class PlayState extends FlxState
 				{
 					_currentSpr.velocity.y = -(_mode == MODE_J ? SPEED_J : SPEED_H);
 					_jeckyl.animation.play("walk-up");
-					_jeckyl.facing = FlxObject.UP;
+					_hyde.animation.play("walk-up");
+					_hyde.facing = _jeckyl.facing = FlxObject.UP;
 				}
 				else if (FlxG.keys.anyPressed(["S", "DOWN"]))
 				{
 					_currentSpr.velocity.y = (_mode == MODE_J ? SPEED_J : SPEED_H);
 					_jeckyl.animation.play("walk-down");
-					_jeckyl.facing = FlxObject.DOWN;
+					_hyde.animation.play("walk-down");
+					_hyde.facing = _jeckyl.facing = FlxObject.DOWN;
 				}
 				else
 				{
@@ -335,6 +354,14 @@ class PlayState extends FlxState
 					{
 						_jeckyl.animation.play("idle-down");
 					}
+					if (_hyde.facing == FlxObject.UP)
+					{
+						_hyde.animation.play("idle-up");
+					}
+					else if (_hyde.facing == FlxObject.DOWN)
+					{
+						_hyde.animation.play("idle-down");
+					}
 					
 				}
 				
@@ -343,18 +370,26 @@ class PlayState extends FlxState
 					_currentSpr.velocity.x = -(_mode == MODE_J ? SPEED_J : SPEED_H);
 					_jeckyl.facing = FlxObject.LEFT;
 					_jeckyl.animation.play("walk-side");
+					_hyde.facing = FlxObject.LEFT;
+					_hyde.animation.play("walk-left");
 				}
 				else if (FlxG.keys.anyPressed(["D","RIGHT"]))
 				{
 					_currentSpr.velocity.x = (_mode == MODE_J ? SPEED_J : SPEED_H);
 					_jeckyl.facing = FlxObject.RIGHT;
 					_jeckyl.animation.play("walk-side");
+					_hyde.facing = FlxObject.RIGHT;
+					_hyde.animation.play("walk-right");
 				}
 				else
 				{
 					_currentSpr.velocity.x = 0;
 					if (_jeckyl.facing == FlxObject.LEFT || _jeckyl.facing == FlxObject.RIGHT)
 						_jeckyl.animation.play("idle-side");
+					if (_hyde.facing == FlxObject.LEFT)
+						_hyde.animation.play("idle-left");
+					else if (_hyde.facing == FlxObject.RIGHT)
+						_hyde.animation.play("idle-right");
 				}
 			}
 
@@ -426,7 +461,23 @@ class PlayState extends FlxState
 			FlxG.collide(_jeckyl, _tmWalls, playerHitsWall);
 			FlxG.collide(_hyde, _tmWalls, playerHitsWall);
 		}
+		
+		if (_currentSpr.x < 80 && _currentSpr.y < 25)
+		{
+			_meter.fadeOut();
+		}
+		else
+		{
+			_meter.fadeIn();
+		}
+		
+		
 	}	
+	
+	private function PlayerOverlapsMeter(S:Dynamic, M:Dynamic):Void
+	{
+		
+	}
 	
 	private function playerHitsEntity(P:Dynamic, E:Dynamic):Bool
 	{

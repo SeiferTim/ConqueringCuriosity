@@ -24,13 +24,13 @@ class Policeman extends FlxSprite
 	{
 		super(X, Y);
 		_speed = 100;
-		loadGraphic("assets/images/policepix.png", true, true);
-		animation.add("walk-side", [0, 1, 0, 2], 6, true);
-		animation.add("idle-side", [0]);
-		animation.add("walk-down", [3, 4, 3, 5], 6, true);
-		animation.add("idle-down", [3]);
-		animation.add("walk-up", [6, 7, 6, 8], 6, true);
-		animation.add("idle-up", [6]);
+		loadGraphic("assets/images/Policepix.png", true, true);
+		animation.add("walk-down", [0, 1, 0, 2], 6, true);
+		animation.add("idle-down", [0]);
+		animation.add("walk-up", [3, 4, 3, 5], 6, true);
+		animation.add("idle-up", [3]);
+		animation.add("walk-side", [6, 7, 6, 8], 6, true);
+		animation.add("idle-side", [6]);
 		animation.play("idle-down");
 		facing = FlxObject.DOWN;
 		

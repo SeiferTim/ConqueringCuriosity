@@ -1,6 +1,7 @@
 package ;
 
 import flixel.FlxG;
+import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.ui.FlxButton;
 
@@ -21,6 +22,8 @@ class GameOverState extends FlxState
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.visible = true;
 		#end
+		
+		add(new FlxSprite(0, 0, "assets/images/game_over.png"));
 		
 		_btnPlay = new FlxButton(0, 0, "Play Again", goPlay);
 		_btnPlay.x = (FlxG.width / 2) - (_btnPlay.width / 2);
