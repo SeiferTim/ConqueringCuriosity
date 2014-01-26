@@ -88,6 +88,9 @@ class PlayState extends FlxState
 	private var _pauseResume:FlxButton;
 	private var _diagGroup:FlxGroup;
 	
+	private var _goToEndGame:Bool = false;
+	private var _leaving:Bool = false;
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -151,7 +154,8 @@ class PlayState extends FlxState
 		_hyde.offset.x = 2;
 		_hyde.offset.y = 2;
 		
-		
+		_jeckyl.forceComplexRender = true;
+		_hyde.forceComplexRender = true;
 		
 		_currentSpr = _jeckyl;
 		
@@ -220,6 +224,9 @@ class PlayState extends FlxState
 	
 	private function goQuit():Void
 	{
+		if (_leaving)
+			return;
+		_leaving = true;
 		FlxG.camera.fade(0xff000000, .2, false, goQuitDone);
 	}
 
@@ -334,6 +341,20 @@ class PlayState extends FlxState
 		super.destroy();
 	}
 
+	private function doneGoingToEndGame():Void
+	{
+		FlxG.switchState(new EndSceneState());
+	}
+	
+	private function startGoingToEndGame():Void
+	{
+		if (_leaving)
+			return;
+		_leaving = true;
+		FlxG.camera.fade(0xff000000, .2, false, doneGoingToEndGame);
+	}
+	
+	
 	/**
 	 * Function that is called once every frame.
 	 */
@@ -342,10 +363,15 @@ class PlayState extends FlxState
 		
 		
 		
-		if (_loading || _changingRoom || _gameOvering)
+		if (_loading || _changingRoom || _gameOvering || _leaving)
 		{
 			super.update();
 			return;
+		}
+		
+		if (FlxG.keys.anyJustReleased(["M"]) || (_goToEndGame && !Reg.DiagShown))
+		{
+			startGoingToEndGame();
 		}
 		
 		if (FlxG.keys.anyJustReleased(["P"]))
@@ -661,6 +687,7 @@ class PlayState extends FlxState
 						_diagGroup.add(new DialogBox("Hm, very large, human footprints...\n\nThese look familiar somehow..."));
 					case Reg.CLUE_3:
 						_diagGroup.add(new DialogBox("An old, key... I wonder if it goes to\nthis house?"));
+						_goToEndGame = true;
 						
 				}
 				E.kill();

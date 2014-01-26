@@ -91,6 +91,7 @@ class MenuState extends FlxState
 	private function finishGoPlay():Void
 	{
 		FlxG.switchState(new PlayState());
+		
 	}
 	
 	private function goOptions():Void

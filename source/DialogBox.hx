@@ -52,6 +52,8 @@ class DialogBox extends FlxGroup
 		add(_dialog);
 		add(_arrow);
 		
+		_box.alpha = _dialog.alpha = _arrow.alpha = 0;
+		
 		_twn = FlxTween.multiVar(this, { _alpha:1 }, .33, { type:FlxTween.ONESHOT, ease:FlxEase.quartInOut, complete:fadeInDone } );
 		
 	}
