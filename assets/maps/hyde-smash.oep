@@ -27,7 +27,7 @@
   <LevelValueDefinitions />
   <LayerDefinitions>
     <LayerDefinition xsi:type="TileLayerDefinition">
-      <Name>Backgrounds</Name>
+      <Name>Backgrounds2</Name>
       <Grid>
         <Width>16</Width>
         <Height>16</Height>
@@ -39,7 +39,7 @@
       <ExportMode>CSV</ExportMode>
     </LayerDefinition>
     <LayerDefinition xsi:type="TileLayerDefinition">
-      <Name>Backgrounds2</Name>
+      <Name>Backgrounds</Name>
       <Grid>
         <Width>16</Width>
         <Height>16</Height>
