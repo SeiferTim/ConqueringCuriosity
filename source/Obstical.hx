@@ -16,7 +16,6 @@ class Obstical extends FlxSprite
 	{
 		super(X, Y);
 		_obsticalType = ObsticalType;
-		trace(_obsticalType);
 		switch(_obsticalType)
 		{
 			case "door":

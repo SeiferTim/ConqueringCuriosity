@@ -17,9 +17,13 @@ class STLState extends FlxState
 	private var _sprSTL:FlxSprite;
 	private var _twn:FlxTween;
 	private var _tmr:FlxTimer;
+	private var _doneL:Bool = false;
+	private var _doneM:Bool = false;
 	
 	override public function create() 
 	{
+		Reg.InitKong();
+		FlxG.autoPause = false;
 		FlxG.cameras.bgColor = 0xff131c1b;
 		// Show the mouse (in case it hasn't been disabled)
 		#if !FLX_NO_MOUSE
@@ -34,6 +38,18 @@ class STLState extends FlxState
 		startFlash();
 		super.create();
 	}
+	
+	override public function update():Void 
+	{
+		if (_doneL && _doneM)
+		{
+			_doneL = _doneM = false;
+			donePause();
+		}
+		
+		super.update();
+	}
+	
 	private function startFadeIn(T:FlxTimer):Void
 	{
 		_twn = FlxTween.multiVar(_sprSTL, { alpha:1 }, .4, { type:FlxTween.ONESHOT, ease:FlxEase.bounceOut, complete:doneFadeIn } );
@@ -46,13 +62,23 @@ class STLState extends FlxState
 	
 	private function doneFadeIn(T:FlxTween):Void
 	{
-		FlxG.sound.play(SndAssets.MUS_MADEINSTL, .6, false, true, donePause);
+		FlxG.sound.play(SndAssets.MUS_MADEINSTL, .6, false, true, doneMusic);
+	}
+	
+	private function doneMusic():Void
+	{
+		_doneM = true;
 	}
 	
 	private function doneFlash():Void
 	{
-		FlxG.sound.play(SndAssets.SND_THUNDER, .6);
+		FlxG.sound.play(SndAssets.SND_THUNDER, .6,false,true,doneThunder);
 		
+	}
+	
+	private function doneThunder():Void
+	{
+		_doneL = true;
 	}
 	
 	private function donePause():Void

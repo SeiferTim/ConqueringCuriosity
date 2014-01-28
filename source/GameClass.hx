@@ -1,6 +1,7 @@
 package;
 
 import flash.Lib;
+import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.FlxState;
 
@@ -40,5 +41,6 @@ class GameClass extends FlxGame
 		}
 
 		super(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen);
+		
 	}
 }

@@ -2,6 +2,7 @@ package;
 
 import flash.display.BlendMode;
 import flash.Lib;
+import flixel.addons.api.FlxKongregate;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.editors.ogmo.FlxOgmoLoader;
 import flixel.addons.text.FlxBitmapFont;
@@ -209,7 +210,7 @@ class PlayState extends FlxState
 		var tmpBack:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, 0x66000000);
 		tmpBack.scrollFactor.x = tmpBack.scrollFactor.y = 0;
 		_pauseScreen.add(tmpBack);
-		_pauseText  = new FlxBitmapFont("assets/images/font.png", 8, 8, FlxBitmapFont.TEXT_SET1, 16);
+		_pauseText  = new FlxBitmapFont("assets/images/font.png", 8, 8, FlxBitmapFont.TEXT_SET1, 95);
 		_pauseText.setText("* PAUSED * ", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, false);
 		
 		FlxSpriteUtil.screenCenter(_pauseText);
@@ -229,7 +230,7 @@ class PlayState extends FlxState
 		_pauseScreen.active = false;
 		_pauseScreen.visible = false;
 		
-		
+		FlxG.watch.add(_meter, "value");
 		
 		super.create();
 	}
@@ -244,6 +245,7 @@ class PlayState extends FlxState
 
 	private function goQuitDone():Void
 	{
+		_sndWarn.stop();
 		FlxG.switchState(new MenuState());
 	}
 	
@@ -318,7 +320,6 @@ class PlayState extends FlxState
 	private function loadObject(ObjName:String, ObjXML:Xml):Void
 	{
 		// use offsetX and offsetY!!!!
-		//trace(ObjXML);
 		switch (ObjName)
 		{
 			case "villager":
@@ -355,6 +356,7 @@ class PlayState extends FlxState
 
 	private function doneGoingToEndGame():Void
 	{
+		_sndWarn.stop();
 		FlxG.switchState(new EndSceneState());
 	}
 	
@@ -401,6 +403,7 @@ class PlayState extends FlxState
 				#if !FLX_NO_MOUSE
 				FlxG.mouse.visible = true;
 				#end
+				_sndWarn.stop();//_sndWarn.fadeOut(.66);
 				_pauseScreen.active = true;
 				_pauseScreen.visible = true;
 			}
@@ -579,14 +582,20 @@ class PlayState extends FlxState
 			{
 				_meter.value += FlxG.elapsed*7;
 			}
-			if (_meter.value > 90)
-			{
-				_sndWarn.play();
+			
+			if (_meter.value > 70)
+			{				
+				if (!_sndWarn.playing)
+				{
+					_sndWarn.play();
+				}
+				
 			}
 			else
-			{
-				_sndWarn.stop();
+			{	if (_sndWarn.playing)
+					_sndWarn.fadeOut(.33);
 			}
+			
 			if ( _meter.value >= 100)
 			{
 				_gameOvering = true;
@@ -633,6 +642,10 @@ class PlayState extends FlxState
 			
 				if (_mode == MODE_H)
 				{
+					if (Reg.HasKong)
+					{
+						FlxKongregate.submitStats("people_killed", 1);
+					}
 					FlxG.sound.play(SndAssets.SND_HIT, .2);
 					E.kill();
 					_meter.value += 10;
@@ -644,7 +657,6 @@ class PlayState extends FlxState
 				
 				FlxG.sound.play(SndAssets.SND_HIT, .2);
 				E.kill();
-				//trace(E.animalType);
 				
 				switch (cast(E, Animal).animalType)
 				{
@@ -670,6 +682,10 @@ class PlayState extends FlxState
 				
 				if (_mode == MODE_H)
 				{
+					if (Reg.HasKong)
+					{
+						FlxKongregate.submitStats("people_killed", 1);
+					}
 					FlxG.sound.play(SndAssets.SND_HIT, .2);
 					E.kill();
 					_meter.value += 30;
@@ -718,6 +734,7 @@ class PlayState extends FlxState
 	
 	private function goGameOver():Void
 	{
+		_sndWarn.stop();
 		FlxG.switchState(new GameOverState());
 	}
 	
@@ -787,10 +804,7 @@ class PlayState extends FlxState
 	
 	private function playerHitsWall(Spr:Dynamic, Walls:Dynamic):Void
 	{
-		//trace('!!');
-		//var m:FlxPoint = _currentSpr.getMidpoint();
-		//_playerPos.x = m.x;
-		//_playerPos.y = m.y;
+	
 	}
 	
 	function get_playerHealth():Int 

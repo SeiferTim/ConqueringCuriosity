@@ -4,11 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.system.FlxSound;
-import flixel.system.resolution.FillResolutionPolicy;
-import flixel.system.resolution.FixedResolutionPolicy;
-import flixel.system.resolution.RatioResolutionPolicy;
-import flixel.system.resolution.RelativeResolutionPolicy;
-import flixel.system.resolution.StageSizeResolutionPolicy;
+//import flixel.system.resolution.RatioResolutionPolicy;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
@@ -31,7 +27,7 @@ class MenuState extends FlxState
 	override public function create():Void
 	{
 		
-		FlxG.resolutionPolicy = new RatioResolutionPolicy();
+		//FlxG.resolutionPolicy = new RatioResolutionPolicy();
 		Reg.PlayMusic(SndAssets.MUS_TITLE);
 		// Set a background color
 		FlxG.cameras.bgColor = 0xff131c1b;

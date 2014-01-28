@@ -1,5 +1,7 @@
 package ;
 
+import flash.display.Bitmap;
+import flixel.addons.api.FlxKongregate;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -54,7 +56,10 @@ class EndSceneState extends FlxState
 		_glasses.x = 87;
 		_glasses.y = -200;
 		
-		
+		if (Reg.HasKong)
+		{
+			FlxKongregate.submitStats("finished_game", 1);
+		}
 		FlxG.camera.fade(0xff000000, .2, true, finishFadeIn);
 		
 		super.create();
@@ -62,10 +67,24 @@ class EndSceneState extends FlxState
 	
 	private function finishedGlasses(T:FlxTween):Void
 	{
-		var _dwi:FlxText = new FlxText(0, 0, 200, "DEAL WITH IT", 18);
-		_dwi.setFormat(null, 18, 0x000000, "center", FlxText.BORDER_OUTLINE, 0xffffff);
-		FlxSpriteUtil.screenCenter(_dwi, true, true);
+		var _dwi:FlxSprite = new FlxSprite(0, 8, "assets/images/deal-text.png");
+		var avatar:FlxSprite = new FlxSprite(0, 0, "assets/images/dealwithit.png");
+		//_dwi.setFormat(null, 18, 0x000000, "center", FlxText.BORDER_OUTLINE, 0xffffff);
+		FlxSpriteUtil.screenCenter(_dwi, true,false);
 		add(_dwi);
+		if (Reg.HasKong)
+		{
+			FlxKongregate.submitStats("dealt_with_it", 1);
+			var a:Bitmap = new Bitmap(avatar.pixels);
+			FlxKongregate.submitAvatar(a, DoneSubmitAvatar);
+			
+		}
+		
+	}
+	
+	private function DoneSubmitAvatar():Void
+	{
+		
 	}
 	
 	private function finishFadeIn():Void

@@ -25,7 +25,6 @@ class Animal extends FlxSprite
 	public function new(X:Float=0, Y:Float=0, AnimalType:String) 
 	{
 		super(X, Y);
-		//trace(AnimalType);
 		_animalType = AnimalType;
 		var sprCow:String = "assets/images/cowpix.png";
 		var sprFox:String = "assets/images/Foxpix.png";

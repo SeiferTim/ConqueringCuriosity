@@ -48,7 +48,7 @@ class OptionsState extends FlxState
 		//_txtHeading = new FlxText(0, 10, FlxG.width, "Options", 12);
 		//_txtHeading.setFormat(null, 12, 0xffffff, "center");
 		
-		_txtHeading = new FlxBitmapFont("assets/images/font.png", 8, 8, FlxBitmapFont.TEXT_SET1, 16);
+		_txtHeading = new FlxBitmapFont("assets/images/font.png", 8, 8, FlxBitmapFont.TEXT_SET1, 95);
 		_txtHeading.setText("Options", false, 0, 0, FlxBitmapFont.ALIGN_CENTER, true);
 		_txtHeading.x = 0;
 		_txtHeading.y = 10;
@@ -57,7 +57,7 @@ class OptionsState extends FlxState
 		
 	//	_txtVolume = new FlxText(10, _txtHeading.y + _txtHeading.height + 10, 60, "Volume:", 10);
 //		_txtVolume.setFormat(null, 10, 0xffffff, "right");
-		_txtVolume = new FlxBitmapFont("assets/images/font.png", 8, 8, FlxBitmapFont.TEXT_SET1, 16);
+		_txtVolume = new FlxBitmapFont("assets/images/font.png", 8, 8, FlxBitmapFont.TEXT_SET1, 95);
 		_txtVolume.setText("Volume", false, 0, 0, FlxBitmapFont.ALIGN_RIGHT, true);
 		_txtVolume.x = 10;
 		_txtVolume.y = _txtHeading.y + _txtHeading.height + 20;

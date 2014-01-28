@@ -33,7 +33,7 @@ class DialogBox extends FlxGroup
 		
 		_box = new FlxSprite(2, 0, "assets/images/box.png");
 		_box.y = FlxG.height - _box.height - 2;
-		_dialog = new FlxBitmapFont("assets/images/font.png", 8, 8, FlxBitmapFont.TEXT_SET1, 16);
+		_dialog = new FlxBitmapFont("assets/images/font.png", 8, 8, FlxBitmapFont.TEXT_SET1, 95);
 		_dialog.x = _box.x + 10;
 		_dialog.y = _box.y + 10;
 		_dialog.setText(DialogText, true, 0, 2, "left", true);
@@ -66,10 +66,8 @@ class DialogBox extends FlxGroup
 	override public function update():Void
 	{
 		_box.alpha = _arrow.alpha = _dialog.alpha = _alpha;
-		//trace(_in + " " + _alpha); 
 		if (_in && _alpha >= 1)
 		{
-			//trace('ready');
 			if (FlxG.keys.anyJustReleased(["X"]))
 			{
 				_in = false;

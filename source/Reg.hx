@@ -1,5 +1,6 @@
 package;
 
+import flixel.addons.api.FlxKongregate;
 import flixel.FlxG;
 import flixel.util.FlxSave;
 
@@ -58,10 +59,12 @@ class Reg
 	
 	static private var CurMusic:String = "";
 	
+	static public var HasKong:Bool = false;
+	
+	//static public var _apiKong:FlxKongregate;
 	
 	static public function PlayMusic(Music:String):Void	
 	{
-		//trace(CurMusic + " " + Music);
 		if (CurMusic != Music)
 		{
 			
@@ -76,7 +79,6 @@ class Reg
 		if (GameInitialized) return;
 		saves[0] = new FlxSave();
 		saves[0].bind("flixel");
-		//trace('init');
 		if (saves[0].data.volume != null)
 		{
 			FlxG.sound.volume = saves[0].data.volume;
@@ -103,6 +105,18 @@ class Reg
 		
 		
 		
+		
 		GameInitialized = true;
+	}
+	
+	public static function InitKong():Void
+	{
+		FlxKongregate.init(loadKong);
+	}
+	
+	private static function loadKong():Void
+	{
+		HasKong = FlxKongregate.hasLoaded;
+		//trace(HasKong);
 	}
 }
