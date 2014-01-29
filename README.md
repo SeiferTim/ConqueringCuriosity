@@ -22,3 +22,7 @@ Isaac Benrubi - Music / Sound FX
 Jordan Covert - Art
 
 Jens Fischer - HaxeFlixel Emergency Support Guru!
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/SeiferTim/conqueringcuriosity/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
